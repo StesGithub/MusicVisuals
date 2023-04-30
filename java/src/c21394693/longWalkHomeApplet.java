@@ -20,6 +20,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
+
 /*
  * This class creates a "dude" sprite 
  * and runs a background image to make it look like hes moving through a town
@@ -33,16 +34,27 @@ import java.awt.event.KeyEvent;
 
 public class longWalkHomeApplet extends Visual {
 
+    private static final int WINDOW_WIDTH = 1200; // Width of game window
+    private static final int WINDOW_HEIGHT = 600; // Height of game window
+    private static final int GROUND_HEIGHT = 50; // Height of the ground
+
+
     public void settings()
     {
         println("In settings");
+        size(WINDOW_WIDTH, WINDOW_HEIGHT, P2D);
     }
     
     public void setup()
     {
-        frameRate(5);
         println("In setup");
-
+        
+        frameRate(5);
+        setFrameSize(512);
+        startMinim();
+        loadAudio("endOfTheWorld.mp3");
+        getAudioPlayer().cue(0);
+        getAudioPlayer().play();
     }
 
     public void draw()
