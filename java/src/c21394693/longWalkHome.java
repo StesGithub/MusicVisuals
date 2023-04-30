@@ -36,7 +36,7 @@ public class longWalkHome extends JFrame {
     private static final int WINDOW_HEIGHT = 600; // Height of game window
     private static final int GROUND_HEIGHT = 50; // Height of the ground
     private Minim minim;
-    AudioPlayer song;
+    //public AudioPlayer song;
 
     private boolean isJumping = false;
     private int dudeY = WINDOW_HEIGHT - GROUND_HEIGHT - 100; // Y-coordinate of the dude
@@ -48,31 +48,37 @@ public class longWalkHome extends JFrame {
     int dudeWidth = 50; // Width of the dude image
     int dudeHeight = 50; // Height of the dude image
 
-
-    public void setup() {
-
+/*
+    public void setup() 
+    {
         minim = new Minim(this);
-
         song = minim.loadFile("endOfTheWorld.mp3");
+        System.out.println("Step 1");
         song.play();
     }
-
-    public longWalkHome() {
+    */
+    public longWalkHome() 
+    {
+        System.out.println("Step 1");
+        AudioPlayer song;
+        minim = new Minim(this);
+        song = minim.loadFile("endOfTheWorld.mp3");
         setTitle("Long Walk Home");
         setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
+        System.out.println("Step 2");
+        song.play();
+        
         JPanel panel = new JPanel() {
             @Override
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
 
-                // Do you have to specify "java/data"? I thought it read from 'data' automatically?? - Cesar
-                backgroundImage = new ImageIcon("java/data/Shapes_and_Sprites/street.png").getImage();
+                backgroundImage = new ImageIcon("Shapes_and_Sprites/street.png").getImage();
                 //be aware this currently isnt working
                 //change it to dude.png if you want something to render
-                dudeImage = new ImageIcon("java/data/Shapes_and_Sprites/dude-20230428-195756.piskel").getImage();
-                streetLampImage = new ImageIcon("java/data/streetLamp.png").getImage();
+                dudeImage = new ImageIcon("Shapes_and_Sprites/dude-20230428-195756.piskel").getImage();
+                streetLampImage = new ImageIcon("streetlamp.png").getImage();
 
                 Graphics2D g2D = (Graphics2D) g;
                 // background town image

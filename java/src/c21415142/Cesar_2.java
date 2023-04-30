@@ -126,14 +126,8 @@ public class Cesar_2 extends Visual
         textFont(font);
         HUD = createGraphics(width, height);
 
-        // Choose a song at Random
-		File[] potential_songs = new File("data/Music/").listFiles(); // make a list of all songs in our music folder
-		Random random = new Random(); // WHY DO WE INITIALISE RANDOM LIKE THIS??? Why Java? 
-		String chosen_song = "Music/" + potential_songs[random.nextInt(potential_songs.length)].getName(); 
-		System.out.println("Going to play " + chosen_song);
-
         startMinim();
-        loadAudio(chosen_song);     
+        loadAudio("endOfTheWorld.mp3");     
     }
 
     
@@ -318,7 +312,7 @@ public class Cesar_2 extends Visual
                     popMatrix();  
                 }//end for-loop for ring parts for this particular band
             }
-            ShowHUD(150, -100);
+            //ShowHUD(150, -100);
                   
         }//end draw
     }
