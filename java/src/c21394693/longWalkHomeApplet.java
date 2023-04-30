@@ -41,6 +41,8 @@ public class longWalkHomeApplet extends Visual {
     PImage dudeImage;
     PImage streetLampImage;
 
+
+
     public void settings() {
         size(WINDOW_WIDTH, WINDOW_HEIGHT, P2D);
 
@@ -59,9 +61,14 @@ public class longWalkHomeApplet extends Visual {
         getAudioPlayer().play();
         /* - - - Finished Audio Setup - - - */
 
-        /* - - - Setup the Images - - - */
 
+
+        /* - - - Setup the Images - - - */
+        backgroundImage =   loadImage("Shapes_and_Sprites/street.png");
+        dudeImage       =   loadImage("Shapes_and_Sprites/dude-20230428-195756.piskel");
+        streetLampImage =   loadImage("Shapes_and_Sprites/streetlamp.png");
         /* - - - Finished Image Setup - - - */
+        
         println("Starting drawing now!");
     }
 
