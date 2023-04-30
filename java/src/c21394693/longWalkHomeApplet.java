@@ -3,13 +3,13 @@ package c21394693;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Image;
 
 import ddf.minim.AudioBuffer;
 import ddf.minim.AudioInput;
 import ddf.minim.AudioPlayer;
 import ddf.minim.Minim;
 import ie.tudublin.Visual;
+import processing.core.*;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -19,7 +19,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-
 
 /*
  * This class creates a "dude" sprite 
@@ -38,27 +37,59 @@ public class longWalkHomeApplet extends Visual {
     private static final int WINDOW_HEIGHT = 600; // Height of game window
     private static final int GROUND_HEIGHT = 50; // Height of the ground
 
+    PImage backgroundImage;
+    PImage dudeImage;
+    PImage streetLampImage;
 
-    public void settings()
-    {
-        println("In settings");
+    public void settings() {
         size(WINDOW_WIDTH, WINDOW_HEIGHT, P2D);
+
     }
-    
-    public void setup()
-    {
-        println("In setup");
-        
-        frameRate(5);
-        setFrameSize(512);
+
+    public void setup() {
+        println("Setting up scene now");
+
+        frameRate(12); // A nice choppy animation
+
+        /* - - - Setup the Audio - - - */
+        setFrameSize(512); // "Frame" here refers to the audio buffer
         startMinim();
         loadAudio("endOfTheWorld.mp3");
         getAudioPlayer().cue(0);
         getAudioPlayer().play();
+        /* - - - Finished Audio Setup - - - */
+
+        /* - - - Setup the Images - - - */
+
+        /* - - - Finished Image Setup - - - */
+        println("Starting drawing now!");
     }
 
-    public void draw()
-    {
+
+    /*  Liam's Waveform visual  */
+    public void Draw_Waveform() {
+        /* Waveform visual code */
+    }
+
+    /*  Oisin background    */
+    public void Draw_Background() {
+        /* Waveform visual code */
+    }
+
+    /*  César Meteor    */
+    public void Draw_Meteor() {
+        /* Waveform visual code */
+    }
+
+    // Stephen Meteor
+    /*
+     * public void Draw_Meteor()
+     * {
+     * 
+     * }
+     */
+
+    public void draw() {
         println("Draw!");
     }
 }
