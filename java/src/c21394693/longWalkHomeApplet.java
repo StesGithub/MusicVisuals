@@ -19,6 +19,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
 
 /*
  * This class creates a "dude" sprite 
@@ -31,7 +32,8 @@ import java.awt.event.KeyEvent;
  * Still trying to get the song to play
  */
 
-public class longWalkHomeApplet extends Visual {
+public class longWalkHomeApplet extends Visual 
+{
 
     private static final int WINDOW_WIDTH = 1200; // Width of game window
     private static final int WINDOW_HEIGHT = 600; // Height of game window
@@ -118,4 +120,32 @@ public class longWalkHomeApplet extends Visual {
             lampX = WINDOW_WIDTH;
         }
     }
+}
+
+
+
+class Repeatable_sprite extends Visual
+{
+    public String image_path; //reads from "data" folder
+    public int scroll_speed;
+    public int distance_between_sprites;
+    public PImage PImage_ref;
+    
+    private int starting_x_position = width; // width here refers to window width
+    private ArrayList<PImage> sprites; // To allow for seamless repetition
+    
+
+    public Repeatable_sprite(String file_path, int Starting_x)
+    {
+        PImage_ref = loadImage(file_path);
+        starting_x_position = Starting_x;
+        
+        int width_taken_up
+    }
+
+    public void draw_sprites()
+    {
+        
+    }
+
 }
