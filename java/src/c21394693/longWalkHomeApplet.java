@@ -53,7 +53,7 @@ public class longWalkHomeApplet extends Visual
     public void setup() {
         println("Setting up scene now");
 
-        frameRate(12); // A nice choppy animation
+        frameRate(30);
 
         /* - - - Setup the Audio - - - */
         setFrameSize(512); // "Frame" here refers to the audio buffer
@@ -148,7 +148,7 @@ class Repeatable_sprite extends Visual
         PImage_ref = loadImage(file_path);
         starting_x_position = Starting_x;
         
-        int width_taken_up
+        int width_taken_up;
     }
 
     public void draw_sprites()
