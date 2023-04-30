@@ -19,6 +19,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
 
 /*
  * This class creates a "dude" sprite 
@@ -31,13 +32,12 @@ import java.awt.event.KeyEvent;
  * Still trying to get the song to play
  */
 
-public class longWalkHomeApplet extends Visual {
+public class longWalkHomeApplet extends Visual 
+{
 
     private static final int WINDOW_WIDTH = 1200; // Width of game window
     private static final int WINDOW_HEIGHT = 600; // Height of game window
     private static final int GROUND_HEIGHT = 50; // Height of the ground
-
-    private int lampX = WINDOW_WIDTH; // X-coordinate of the lamp
 
     PImage backgroundImage;
     PImage dudeImage;
@@ -53,7 +53,7 @@ public class longWalkHomeApplet extends Visual {
     public void setup() {
         println("Setting up scene now");
 
-        frameRate(30); // A nice choppy animation
+        frameRate(30);
 
         /* - - - Setup the Audio - - - */
         setFrameSize(512); // "Frame" here refers to the audio buffer
@@ -77,8 +77,27 @@ public class longWalkHomeApplet extends Visual {
 
     /*  Liam's Waveform visual  */
     public void Draw_Waveform() {
-        /* Waveform visual code */
+        // Get the waveform data from the audio buffer
+        AudioBuffer buffer = getAudioBuffer();
+        float[] waveform = buffer.toArray();
+    
+        // Set the stroke color to red and stroke weight to 2
+        stroke(255, 0, 0);
+        strokeWeight(2);
+    
+        // Calculate the step size for the x-axis
+        float xStep = width / (float) waveform.length;
+    
+        // Draw the waveform as a series of connected points
+        beginShape();
+        for (int i = 0; i < waveform.length; i++) {
+            float x = i * xStep;
+            float y = map(waveform[i], -1, 1, height, 0);
+            vertex(x, y);
+        }
+        endShape();
     }
+    
 
     /*  Oisin background    */
     public void Draw_Background() {
@@ -105,17 +124,36 @@ public class longWalkHomeApplet extends Visual {
         // Draw ground
         fill(200); //Light gray;
         rect(0, WINDOW_HEIGHT-GROUND_HEIGHT, WINDOW_WIDTH, GROUND_HEIGHT);
+        // Liams waveform, just calling it so it can be seen on the screen
+        Draw_Waveform();
 
-        // Draw "lamp"
-        image(streetLampImage, lampX, (WINDOW_HEIGHT - GROUND_HEIGHT - streetLampImage.height) );
-
-
-        // Update lamp position
-        lampX -= 2; // Move lamp towards left
-
-        // Check if lamp is out of screen, reset its position
-        if (lampX + 20 < 0) {
-            lampX = WINDOW_WIDTH;
-        }
     }
+}
+
+
+
+class Repeatable_sprite extends Visual
+{
+    public String image_path; //reads from "data" folder
+    public int scroll_speed;
+    public int distance_between_sprites;
+    public PImage PImage_ref;
+    
+    private int starting_x_position = width; // width here refers to window width
+    private ArrayList<PImage> sprites; // To allow for seamless repetition
+    
+
+    public Repeatable_sprite(String file_path, int Starting_x)
+    {
+        PImage_ref = loadImage(file_path);
+        starting_x_position = Starting_x;
+        
+        int width_taken_up;
+    }
+
+    public void draw_sprites()
+    {
+        
+    }
+
 }
