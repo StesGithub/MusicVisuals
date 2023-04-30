@@ -97,7 +97,11 @@ public class longWalkHomeApplet extends Visual {
      */
 
     public void draw() {
-        /*  Draw Background */
+        // background town image
         image(backgroundImage, 0, 0);
+
+        // Draw ground
+        fill(200); //Light gray;
+        rect(0, WINDOW_HEIGHT-GROUND_HEIGHT, WINDOW_WIDTH, GROUND_HEIGHT);
     }
 }
