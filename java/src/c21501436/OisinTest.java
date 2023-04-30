@@ -4,7 +4,8 @@ public class OisinTest {
     
     public static void main(String[] args){
 
-		ChangingScreen test  = new ChangingScreen();
+		String[] a = { "MAIN" };
+		processing.core.PApplet.runSketch(a, new ChangingScreen());
 	
 	}
 }
