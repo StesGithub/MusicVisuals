@@ -80,12 +80,12 @@ public class longWalkHomeApplet extends Visual {
 
     /*  Oisin background    */
     public void Draw_Background() {
-        /* Waveform visual code */
+        /* background visual code */
     }
 
     /*  César Meteor    */
     public void Draw_Meteor() {
-        /* Waveform visual code */
+        /* meteor visual code */
     }
 
     // Stephen Meteor

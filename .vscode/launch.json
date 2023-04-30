@@ -2,6 +2,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "OisinTest",
+            "request": "launch",
+            "mainClass": "c21501436.OisinTest",
+            "projectName": "java"
+        },
+        {
+            "type": "java",
             "name": "ChangingScreen",
             "request": "launch",
             "mainClass": "c21501436.ChangingScreen",
