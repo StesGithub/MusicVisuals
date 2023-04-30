@@ -68,7 +68,7 @@ public class longWalkHomeApplet extends Visual {
         dudeImage       =   loadImage("Shapes_and_Sprites/dude-20230428-195756.piskel");
         streetLampImage =   loadImage("Shapes_and_Sprites/streetlamp.png");
         /* - - - Finished Image Setup - - - */
-        
+
         println("Starting drawing now!");
     }
 
@@ -97,6 +97,7 @@ public class longWalkHomeApplet extends Visual {
      */
 
     public void draw() {
-        println("Draw!");
+        /*  Draw Background */
+        image(backgroundImage, 0, 0);
     }
 }
