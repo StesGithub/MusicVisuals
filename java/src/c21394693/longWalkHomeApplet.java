@@ -63,9 +63,9 @@ public class longWalkHomeApplet extends Visual {
         streetLampImage = loadImage("Shapes_and_Sprites/trans_streetlamp.png");
 
         // The dude sprites[3]
-        the_dude.sprite_sheet_run[0] = loadImage("Shapes_and_Sprites/dude_sprites/dude_run_1.jpg");
-        the_dude.sprite_sheet_run[1] = loadImage("Shapes_and_Sprites/dude_sprites/dude_run_2.jpg");
-        the_dude.sprite_sheet_run[2] = loadImage("Shapes_and_Sprites/dude_sprites/dude_run_3.jpg");
+        the_dude.sprite_sheet_run[0] = loadImage("Shapes_and_Sprites/dude_sprites/l0_dudeFinal1.png");
+        the_dude.sprite_sheet_run[1] = loadImage("Shapes_and_Sprites/dude_sprites/l1_dudeFinal1.png");
+        the_dude.sprite_sheet_run[2] = loadImage("Shapes_and_Sprites/dude_sprites/l2_dudeFinal1.png");
 
         the_dude.sprite_sheet_jump[0] = loadImage("Shapes_and_Sprites/dude_sprites/dude_run_1.jpg");
         the_dude.sprite_sheet_jump[1] = loadImage("Shapes_and_Sprites/dude_sprites/dude_run_2.jpg");
