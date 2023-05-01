@@ -3,7 +3,7 @@ package c21394693;
 import ddf.minim.AudioBuffer;
 import ie.tudublin.Visual;
 import processing.core.*;
-
+import ie.tudublin.VisualException;
 import java.util.ArrayList;
 
 /*
@@ -33,7 +33,9 @@ public class longWalkHomeApplet extends Visual {
     Repeatable_sprite streetLampRepeat = new Repeatable_sprite(0, 369, 500, 0.5f);
     Repeatable_sprite BackgroundRepeat = new Repeatable_sprite(0, 0, 0, 1f);
     Dude the_dude = new Dude((WINDOW_HEIGHT - GROUND_HEIGHT - 100), 1, 150, 150);
-    Meteor the_meteor = new Meteor((WINDOW_HEIGHT - GROUND_HEIGHT), 1, 150,150 );
+    Meteor the_meteor = new Meteor((WINDOW_HEIGHT - GROUND_HEIGHT), 1, 150, 150);
+    Cesar_Meteor the_new_meteor = new Cesar_Meteor(200, 100, 10, 10, 50, 5, 200,
+            30, 15, -10, 3, 30, 1, 150, 150);
 
     public void keyPressed() {
         if (key == ' ') {
@@ -72,12 +74,17 @@ public class longWalkHomeApplet extends Visual {
         the_dude.sprite_sheet_jump[1] = loadImage("Shapes_and_Sprites/dude_sprites/dude_run_2.jpg");
         the_dude.sprite_sheet_jump[2] = loadImage("Shapes_and_Sprites/dude_sprites/dude_run_3.jpg");
 
-        //Meteor sprites
+        // Meteor sprites
         
-        the_meteor.sprite_sheet_fly[0] = loadImage("java/data/Shapes_and_Sprites/meteorLayers/l0_sprite_1.png");
-        the_meteor.sprite_sheet_fly[1] = loadImage("java/data/Shapes_and_Sprites/meteorLayers/l1_sprite_1.png");
-        the_meteor.sprite_sheet_fly[2] = loadImage("java/data/Shapes_and_Sprites/meteorLayers/l2_sprite_1.png");
-        the_meteor.sprite_sheet_fly[3] = loadImage("java/data/Shapes_and_Sprites/meteorLayers/l3_sprite_1.png");
+        the_meteor.sprite_sheet_fly[0] = loadImage("Shapes_and_Sprites/meteorLayers/l0_sprite_1.png");
+        the_meteor.sprite_sheet_fly[1] = loadImage("Shapes_and_Sprites/meteorLayers/l1_sprite_1.png");
+        the_meteor.sprite_sheet_fly[2] = loadImage("Shapes_and_Sprites/meteorLayers/l2_sprite_1.png");
+        the_meteor.sprite_sheet_fly[3] = loadImage("Shapes_and_Sprites/meteorLayers/l3_sprite_1.png");
+        // testing cesar version
+        the_new_meteor.sprite_sheet_fly[0] = loadImage("Shapes_and_Sprites/meteorLayers/l0_sprite_1.png");
+        the_new_meteor.sprite_sheet_fly[1] = loadImage("Shapes_and_Sprites/meteorLayers/l1_sprite_1.png");
+        the_new_meteor.sprite_sheet_fly[2] = loadImage("Shapes_and_Sprites/meteorLayers/l2_sprite_1.png");
+        the_new_meteor.sprite_sheet_fly[3] = loadImage("Shapes_and_Sprites/meteorLayers/l3_sprite_1.png");
         /* - - - Finished Image Setup - - - */
 
         println("Starting drawing now!");
@@ -199,6 +206,181 @@ public class longWalkHomeApplet extends Visual {
 
     }
 
+    // The meteor class, draws waveform and particles off incoming meteor
+    class Cesar_Meteor {
+        public int origin_x; // new scene origin
+        public int origin_y;
+        public int initial_gap_x; // how far away should the corner waveforms be from the meteor
+        public int initial_gap_y;
+        public int max_height; // max height of each rectangle in those waveforms
+        public int rect_width; // max width of each rectangle
+        public int bands_to_do; // how many should be printed
+        public int roundedness;
+        public int degrees_tilt; // how much to tilt waveform
+        public int particle_spawn_rate;
+        public int max_speed;
+        public int sensitivity;
+
+        // set images in setup()
+        public PImage[] sprite_sheet_fly = new PImage[4];
+        public int frame_rate;
+
+        private int meteorWidth;
+        private int meteorHeight;
+        private int meteor_Index = 0;
+        private int particle_distances_so_far[];
+        private int particle_alphas[];
+        private int particle_seeds[];
+        private float particle_rotations[];
+        static private long last_change_time;
+
+        static private final int meteor_spriteSheet_size = 4;
+
+        public Cesar_Meteor(int met_origin_x, int met_origin_y, int band_initial_gap_x, int band_initial_gap_y,
+                int band_max_height, int band_rect_width, int band_sensitivity,
+                int met_bands_to_do, int met_roundedness, int met_degrees_tilt, int met_particle_spawn_rate,
+                int particle_max_speed, int animation_rate, int met_width, int met_height) {
+            origin_x = met_origin_x;
+            origin_y = met_origin_y;
+            initial_gap_x = band_initial_gap_x;
+            initial_gap_y = band_initial_gap_y;
+            max_height = band_max_height;
+            rect_width = band_rect_width;
+            sensitivity = band_sensitivity;
+            bands_to_do = met_bands_to_do;
+            roundedness = met_roundedness;
+            degrees_tilt = met_degrees_tilt;
+            particle_spawn_rate = met_particle_spawn_rate;
+            max_speed = particle_max_speed;
+            frame_rate = animation_rate;
+            meteorWidth = met_width;
+            meteorHeight = met_height;
+
+            particle_distances_so_far = new int[met_particle_spawn_rate];
+            particle_alphas = new int[met_particle_spawn_rate];
+            particle_seeds = new int[met_particle_spawn_rate];
+            particle_rotations = new float[met_particle_spawn_rate];
+
+            for (int i = 0; i < met_particle_spawn_rate; i++) {
+                particle_distances_so_far[i] = 0;
+                particle_seeds[i] = (i % max_speed) + 1;
+                particle_alphas[i] = 255;
+                particle_rotations[i] = i * 1.234f;
+            }
+        }
+
+        public void draw_meteor() {
+            pushMatrix();
+            noStroke();
+            colorMode(RGB);
+            translate(origin_x, origin_y); // set new origin
+            rotate((float) degrees_tilt * 0.01745f); // degrees to radians... clockwise
+
+            // top left of mini waveform
+            float band_amp = (getSmoothedBands()[(getSmoothedBands().length / 4) * (1)] + 1) * sensitivity;
+            int start_x = -initial_gap_x - rect_width;
+            for (int i = 1; i <= bands_to_do; i++) {
+                fill(band_amp, band_amp / 4, band_amp / 4, 255 / i);
+                rect(
+                        start_x,
+                        -initial_gap_y,
+                        rect_width,
+                        constrain(-band_amp / i, -max_height, 0),
+                        roundedness);
+
+                start_x -= rect_width;
+            }
+
+            // top right of mini waveform
+            band_amp = (getSmoothedBands()[(getSmoothedBands().length / 4) * (3)] + 1) * sensitivity;
+            start_x = initial_gap_x;
+
+            for (int i = 1; i <= bands_to_do; i++) {
+                fill(band_amp, band_amp / 4, band_amp / 4, 255 / i);
+                rect(
+                        start_x,
+                        -initial_gap_y,
+                        rect_width,
+                        constrain(-band_amp / i, -max_height, 0),
+                        roundedness);
+                start_x += rect_width;
+            }
+
+            // bottom right of mini waveform
+            band_amp = (getSmoothedBands()[(getSmoothedBands().length / 4) * (2)] + 1) * sensitivity;
+            start_x = initial_gap_x;
+            fill(43, 200, 200);
+            for (int i = 1; i <= bands_to_do; i++) {
+                fill(band_amp / 2, band_amp / 10, band_amp / 10, 222 / i);
+                rect(
+                        start_x,
+                        initial_gap_y,
+                        rect_width,
+                        constrain(band_amp / i, 0, max_height),
+                        roundedness);
+                start_x += rect_width;
+            }
+
+            // bottom left of mini waveform
+            band_amp = (getSmoothedBands()[(getSmoothedBands().length - 3)] + 1) * sensitivity;
+            start_x = -initial_gap_x - rect_width;
+            fill(43, 43, 200);
+            for (int i = 1; i <= bands_to_do; i++) {
+                fill(band_amp / 2, band_amp / 10, band_amp / 10, 222 / i);
+                rect(
+                        start_x,
+                        initial_gap_y,
+                        rect_width,
+                        constrain(band_amp / i, 0, max_height),
+                        roundedness);
+                start_x -= rect_width;
+            }
+
+            rotate(-((float) degrees_tilt * 0.01745f)); // rotate back to normal
+
+            // time to draw particles
+            ellipseMode(CENTER);
+
+            colorMode(HSB);
+            for (int i = 0; i < particle_spawn_rate; i++) {
+                rotate(particle_rotations[i]);
+
+                if (particle_alphas[i] <= 0) {
+                    particle_alphas[i] = 255;
+                    particle_distances_so_far[i] = 0;
+                }
+
+                fill(particle_distances_so_far[i], 255, particle_alphas[i], particle_alphas[i]);
+
+                ellipse(0, particle_distances_so_far[i], particle_alphas[i] / 16f, particle_alphas[i] / 8f);
+
+                particle_distances_so_far[i] -= particle_seeds[i];
+                particle_alphas[i] -= particle_seeds[i];
+
+            }
+            colorMode(RGB);
+            popMatrix();
+
+            // draw meteor
+            pushMatrix();
+            translate(origin_x, origin_y);
+
+            // Have enough miliseconds passsed
+            if ((System.currentTimeMillis() - last_change_time) > 1000 / frame_rate) {
+                meteor_Index++;
+                // Loop back to 0 if needed
+                if (meteor_Index >= meteor_spriteSheet_size) {
+                    meteor_Index = 0;
+                }
+                last_change_time = System.currentTimeMillis();
+            }
+            image(sprite_sheet_fly[meteor_Index], -meteorWidth / 2, -meteorHeight / 2, meteorWidth, meteorHeight);
+            popMatrix();
+
+        }
+
+    }
+
     class Meteor {
 
         public int starting_Y;
@@ -207,7 +389,7 @@ public class longWalkHomeApplet extends Visual {
         public int frame_rate;
 
         private int meteor_Index = 0;
-        private int Y; 
+        private int Y;
         private int X = 100;
         private int meteorWidth;
         private int meteorHeight;
@@ -221,8 +403,7 @@ public class longWalkHomeApplet extends Visual {
             meteorWidth = meteor_width;
             meteorHeight = meteor_height;
         }
-        
-        
+
         /* Stephens Meteor */
         public void Draw_Meteor() {
             // Have enough miliseconds passsed
@@ -239,16 +420,13 @@ public class longWalkHomeApplet extends Visual {
 
     /* Liam's Waveform visual */
     public void Draw_Waveform() {
-        // Get the waveform data from the audio buffer
-        buffer = getAudioBuffer();
-        waveform = buffer.toArray();
-
         // Set the stroke color to red and stroke weight to 2
         stroke(255, 0, 0);
         strokeWeight(2);
 
-        // Calculate the step size for the x-axis
-        float xStep = width / (float) waveform.length;
+        // Calculate the step size for the x-axis, +0.02 so that it reaches the end of
+        // the screen
+        float xStep = width / (float) waveform.length + 0.02f;
 
         // Draw the waveform as a series of connected points
         beginShape();
@@ -268,33 +446,34 @@ public class longWalkHomeApplet extends Visual {
         /* background visual code */
     }
 
-    // Stephen Meteor
-    /*
-     * public void Draw_Meteor()
-     * {
-     * 
-     * }
-     */
-
     public void draw() {
 
-        background(102, 153, 204); // Cyan makes gaps easy to spot
+        background(102, 153, 204);
+
+        // Get the waveform data from the audio buffer
+        buffer = getAudioBuffer();
+        waveform = buffer.toArray();
+
+        the_new_meteor.draw_meteor();
+        
+        // Liams waveform, just calling it so it can be seen on the screen
         Draw_Waveform();
+
         // background town image
         BackgroundRepeat.repeat(backgroundImage, 2);
 
         // Draw ground
         fill(200); // Light gray;
         rect(0, WINDOW_HEIGHT - GROUND_HEIGHT, WINDOW_WIDTH, GROUND_HEIGHT);
-        // Liams waveform, just calling it so it can be seen on the screen
 
         // Street lamp
         streetLampRepeat.repeat(streetLampImage, 5);
+
         // Draw dude
         the_dude.draw_dude();
 
-        the_meteor.Draw_Meteor();
-
+        // the_meteor.Draw_Meteor();
+        
         print("\rFPS: " + frameRate);
 
     }
