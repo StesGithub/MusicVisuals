@@ -33,6 +33,7 @@ public class longWalkHomeApplet extends Visual {
     Repeatable_sprite streetLampRepeat = new Repeatable_sprite(0, 369, 500, 0.5f);
     Repeatable_sprite BackgroundRepeat = new Repeatable_sprite(0, 0, 0, 1f);
     Dude the_dude = new Dude((WINDOW_HEIGHT - GROUND_HEIGHT - 100), 1, 100, 100);
+    Meteor the_meteor = new Meteor((WINDOW_HEIGHT - GROUND_HEIGHT), 1, 150,150 );
 
     public void keyPressed() {
         if (key == ' ') {
@@ -70,6 +71,12 @@ public class longWalkHomeApplet extends Visual {
         the_dude.sprite_sheet_jump[0] = loadImage("Shapes_and_Sprites/dude_sprites/dude_run_1.jpg");
         the_dude.sprite_sheet_jump[1] = loadImage("Shapes_and_Sprites/dude_sprites/dude_run_2.jpg");
         the_dude.sprite_sheet_jump[2] = loadImage("Shapes_and_Sprites/dude_sprites/dude_run_3.jpg");
+
+        //Meteor sprites
+        the_meteor.sprite_sheet_fly[0] = loadImage("java/data/Shapes_and_Sprites/meteorLayers/l0_sprite_1.png");
+        the_meteor.sprite_sheet_fly[1] = loadImage("java/data/Shapes_and_Sprites/meteorLayers/l1_sprite_1.png");
+        the_meteor.sprite_sheet_fly[2] = loadImage("java/data/Shapes_and_Sprites/meteorLayers/l2_sprite_1.png");
+        the_meteor.sprite_sheet_fly[3] = loadImage("java/data/Shapes_and_Sprites/meteorLayers/l3_sprite_1.png");
         /* - - - Finished Image Setup - - - */
 
         println("Starting drawing now!");
@@ -154,8 +161,6 @@ public class longWalkHomeApplet extends Visual {
             dudeHeight = dude_height;
         }
 
-        
-
         public void draw_dude() {
             // Have enough miliseconds passsed
             if ((System.currentTimeMillis() - last_change_time) > 1000 / frame_rate) {
@@ -193,6 +198,44 @@ public class longWalkHomeApplet extends Visual {
 
     }
 
+    class Meteor {
+
+        public int starting_Y;
+        // set images in setup()
+        public PImage[] sprite_sheet_fly = new PImage[4];
+        public int frame_rate;
+
+        private int meteor_Index = 0;
+        private int Y; 
+        private int X = 100;
+        private int meteorWidth;
+        private int meteorHeight;
+        public int sprite_index = 0;
+        static private long last_change_time;
+        static private final int meteor_spriteSheet_size = 4;
+
+        public Meteor(int starting_y_pos, int animation_rate, int meteor_width, int meteor_height) {
+            starting_Y = starting_y_pos;
+            frame_rate = animation_rate;
+            meteorWidth = meteor_width;
+            meteorHeight = meteor_height;
+        }
+        
+        
+        /* Stephens Meteor */
+        public void Draw_Meteor() {
+            // Have enough miliseconds passsed
+            if ((System.currentTimeMillis() - last_change_time) > 1000 / frame_rate) {
+                meteor_Index++;
+                // Loop back to 0 if needed
+                if (meteor_Index >= meteor_spriteSheet_size) {
+                    meteor_Index = 0;
+                }
+                last_change_time = System.currentTimeMillis();
+            }
+        }
+    }
+
     /* Liam's Waveform visual */
     public void Draw_Waveform() {
         // Get the waveform data from the audio buffer
@@ -224,11 +267,6 @@ public class longWalkHomeApplet extends Visual {
         /* background visual code */
     }
 
-    /* César Meteor */
-    public void Draw_Meteor() {
-        /* meteor visual code */
-    }
-
     // Stephen Meteor
     /*
      * public void Draw_Meteor()
@@ -253,6 +291,8 @@ public class longWalkHomeApplet extends Visual {
         streetLampRepeat.repeat(streetLampImage, 5);
         // Draw dude
         the_dude.draw_dude();
+
+        the_meteor.Draw_Meteor();
 
         print("\rFPS: " + frameRate);
 
