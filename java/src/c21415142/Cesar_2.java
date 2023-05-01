@@ -253,7 +253,7 @@ public class Cesar_2 extends Visual
             getAudioPlayer().play(); // initiate Death Grips
 
             scene_camera.location = new vector3(0, -max_height - (mini_offset/2), -2000);
-            camera_offset_to_apply[0] = new vector3(0,0.00006f,0.001f);
+            camera_offset_to_apply[0] = new vector3(0,0,0);
         }
         
         
@@ -289,13 +289,9 @@ public class Cesar_2 extends Visual
                     stroke(map(i, 0, bands.length, 0, 255), 255, 255); // Change colour depending on which band we're on
                     
                     pushMatrix();
-                    
-                    
-                    Y_offset = misc_math.Clamp(-150, max_height, h * (h / (r * sensitivity)) );   /* sensitivity, lower number here means each ring
-                    will be more sensitive to sound the "h * (h/(r * sensitivity))" 
-                    makes the box flush to the ground, only the top part will go up...
-                    Clamp the height between -150 and whatever the max height can be 
-                    */
+                                 
+                    Y_offset = misc_math.Clamp(-150, max_height, h * (h / (r * sensitivity)) );
+
                     
                     translate( x * (r * 0.4f), -max_height - (-Y_offset / 2), z * (r * 0.4f) );
                     rotateY(theta);
@@ -312,7 +308,7 @@ public class Cesar_2 extends Visual
                     popMatrix();  
                 }//end for-loop for ring parts for this particular band
             }
-            //ShowHUD(150, -100);
+            ShowHUD(150, -100);
                   
         }//end draw
     }
@@ -374,7 +370,7 @@ public class Cesar_2 extends Visual
         
         // Try change scenes later
         scene_1.scene_setup();
-        scene_camera.update_camera(false);
+        scene_camera.update_camera(true);
         scene_1.draw_scene();
 
     }
