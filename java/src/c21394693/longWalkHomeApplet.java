@@ -113,14 +113,15 @@ public class longWalkHomeApplet extends Visual {
 
             for (int i = 0; i < sprites_required; i++) {
 
-                image(image_ref, new_x_position, starting_y_position, image_ref.width*scale, image_ref.height*scale);
+                image(image_ref, new_x_position, starting_y_position, image_ref.width * scale,
+                        image_ref.height * scale);
                 new_x_position += image_ref.width * scale;
                 new_x_position += distance_between_sprites;
             }
 
             starting_x_position -= scroll_speed;
 
-            if ((starting_x_position + (image_ref.width*scale)) < 0) {
+            if ((starting_x_position + (image_ref.width * scale)) < 0) {
 
                 starting_x_position += (image_ref.width * scale);
                 starting_x_position += distance_between_sprites;
@@ -153,10 +154,11 @@ public class longWalkHomeApplet extends Visual {
             dudeHeight = dude_height;
         }
 
+        
+
         public void draw_dude() {
             // Have enough miliseconds passsed
-            if ((System.currentTimeMillis() - last_change_time) > 1000 / frame_rate) 
-            {
+            if ((System.currentTimeMillis() - last_change_time) > 1000 / frame_rate) {
                 sprite_index++;
                 // Loop back to 0 if needed
                 if (sprite_index >= sprite_sheet_size) {
@@ -246,16 +248,11 @@ public class longWalkHomeApplet extends Visual {
         fill(200); // Light gray;
         rect(0, WINDOW_HEIGHT - GROUND_HEIGHT, WINDOW_WIDTH, GROUND_HEIGHT);
         // Liams waveform, just calling it so it can be seen on the screen
-        
 
-        
-        // Draw dude
-        the_dude.draw_dude();
-        
         // Street lamp
         streetLampRepeat.repeat(streetLampImage, 5);
-
-
+        // Draw dude
+        the_dude.draw_dude();
 
         print("\rFPS: " + frameRate);
 
