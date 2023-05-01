@@ -32,7 +32,7 @@ public class longWalkHomeApplet extends Visual {
     PImage streetLampImage;
     Repeatable_sprite streetLampRepeat = new Repeatable_sprite(0, 369, 500, 0.5f);
     Repeatable_sprite BackgroundRepeat = new Repeatable_sprite(0, 0, 0, 1f);
-    Dude the_dude = new Dude((WINDOW_HEIGHT - GROUND_HEIGHT - 100), 1, 100, 100);
+    Dude the_dude = new Dude((WINDOW_HEIGHT - GROUND_HEIGHT - 100), 1, 150, 150);
     Meteor the_meteor = new Meteor((WINDOW_HEIGHT - GROUND_HEIGHT), 1, 150,150 );
 
     public void keyPressed() {
@@ -73,6 +73,7 @@ public class longWalkHomeApplet extends Visual {
         the_dude.sprite_sheet_jump[2] = loadImage("Shapes_and_Sprites/dude_sprites/dude_run_3.jpg");
 
         //Meteor sprites
+        
         the_meteor.sprite_sheet_fly[0] = loadImage("java/data/Shapes_and_Sprites/meteorLayers/l0_sprite_1.png");
         the_meteor.sprite_sheet_fly[1] = loadImage("java/data/Shapes_and_Sprites/meteorLayers/l1_sprite_1.png");
         the_meteor.sprite_sheet_fly[2] = loadImage("java/data/Shapes_and_Sprites/meteorLayers/l2_sprite_1.png");
