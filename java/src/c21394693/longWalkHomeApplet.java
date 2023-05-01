@@ -26,16 +26,22 @@ public class longWalkHomeApplet extends Visual {
     AudioBuffer buffer;
     float[] waveform;
 
-    // Images and Sprites
+    // Images and repeat-sprites
     PImage backgroundImage;
     PImage dudeImage;
     PImage streetLampImage;
-    Repeatable_sprite streetLampRepeat = new Repeatable_sprite(0, 200, 500);
-    Repeatable_sprite BackgroundRepeat = new Repeatable_sprite(0, 0, 0);
+    Repeatable_sprite streetLampRepeat = new Repeatable_sprite(0, 369, 500, 0.5f);
+    Repeatable_sprite BackgroundRepeat = new Repeatable_sprite(0, 0, 0, 1f);
+    Dude the_dude = new Dude((WINDOW_HEIGHT - GROUND_HEIGHT - 100), 1, 50, 50);
+
+    public void keyPressed() {
+        if (key == ' ') {
+            the_dude.jump();
+        }
+    }
 
     public void settings() {
         size(WINDOW_WIDTH, WINDOW_HEIGHT, P2D);
-
     }
 
     public void setup() {
@@ -53,34 +59,49 @@ public class longWalkHomeApplet extends Visual {
 
         /* - - - Setup the Images - - - */
         backgroundImage = loadImage("Shapes_and_Sprites/street.png");
-        dudeImage = loadImage("Shapes_and_Sprites/dude-20230428-195756.piskel");
-        streetLampImage = loadImage("trans_streetlamp.png");
+        dudeImage = loadImage("Shapes_and_Sprites/dude.png");
+        streetLampImage = loadImage("Shapes_and_Sprites/trans_streetlamp.png");
+
+        // The dude sprites[3]
+        the_dude.sprite_sheet_run[0] = loadImage("Shapes_and_Sprites/dude_sprites/dude_run_1.jpg");
+        the_dude.sprite_sheet_run[1] = loadImage("Shapes_and_Sprites/dude_sprites/dude_run_2.jpg");
+        the_dude.sprite_sheet_run[2] = loadImage("Shapes_and_Sprites/dude_sprites/dude_run_3.jpg");
+
+        the_dude.sprite_sheet_jump[0] = loadImage("Shapes_and_Sprites/dude_sprites/dude_run_1.jpg");
+        the_dude.sprite_sheet_jump[1] = loadImage("Shapes_and_Sprites/dude_sprites/dude_run_2.jpg");
+        the_dude.sprite_sheet_jump[2] = loadImage("Shapes_and_Sprites/dude_sprites/dude_run_3.jpg");
         /* - - - Finished Image Setup - - - */
 
         println("Starting drawing now!");
     }
 
+    /*
+     * A class which takes in a PImage reference and makes sure that any loading and
+     * unloading
+     * takes place off-screen, allowing for seamless reptition
+     */
     class Repeatable_sprite {
         public int distance_between_sprites;
+        public float scale = 1f; // how much to scale the image by
         private int starting_x_position = 0;
         private int starting_y_position = 0;
 
-        public Repeatable_sprite(int Starting_x, int Starting_y, int Gap_size) {
+        public Repeatable_sprite(int Starting_x, int Starting_y, int Gap_size, float scale_factor) {
             starting_x_position = Starting_x;
             starting_y_position = Starting_y;
             distance_between_sprites = Gap_size;
+            scale = scale_factor;
         }
 
-        //transparent images dont have a width or height, have to input manually
-        public void repeat(PImage image_ref, int scroll_speed, int image_width, int image_height)
-        {
+        public void repeat(PImage image_ref, int scroll_speed) {
+
             // Figure out how many sprites are required for seamless repetiton horizontally
             int width_taken_up_so_far = 0;
             int sprites_required = 0;
             int new_x_position = starting_x_position;
 
-            while (width_taken_up_so_far <= (width * 2)) {
-                width_taken_up_so_far += image_width;
+            while (width_taken_up_so_far <= (width * 1.5)) {
+                width_taken_up_so_far += image_ref.width * scale;
                 width_taken_up_so_far += distance_between_sprites;
                 sprites_required++;
                 /*
@@ -90,37 +111,83 @@ public class longWalkHomeApplet extends Visual {
                  */
             }
 
-            for (int i = 0; i < sprites_required; i++) 
-            {
-                beginShape(); // TL, TR, BR, BL
-                
-                textureMode(NORMAL); // corners are 0-1
-                texture(image_ref);
-                vertex(new_x_position,              starting_y_position,                0,0 ); //Top left
-                vertex(new_x_position+image_width,  starting_y_position,                1,0 ); //Top right
-                vertex(new_x_position,              starting_y_position+image_width,    0,1 ); //Bottom left
-                vertex(new_x_position+image_width,  starting_y_position+image_width,    1,1 ); //Bottom right
-                endShape();
-                
-                new_x_position += image_width;
+            for (int i = 0; i < sprites_required; i++) {
+
+                image(image_ref, new_x_position, starting_y_position, image_ref.width*scale, image_ref.height*scale);
+                new_x_position += image_ref.width * scale;
                 new_x_position += distance_between_sprites;
-            
             }
 
             starting_x_position -= scroll_speed;
 
-            if ((starting_x_position + image_width) < 0) {
+            if ((starting_x_position + (image_ref.width*scale)) < 0) {
 
-                starting_x_position += image_width;
+                starting_x_position += (image_ref.width * scale);
                 starting_x_position += distance_between_sprites;
             }
         }
 
-        public void repeat(PImage image_ref, int scroll_speed) 
-        {
-            repeat(image_ref, scroll_speed, image_ref.width, image_ref.height);
+    }
+
+    class Dude {
+        public int starting_Y;
+        // set images in setup()
+        public PImage[] sprite_sheet_run = new PImage[sprite_sheet_size];
+        public PImage[] sprite_sheet_jump = new PImage[sprite_sheet_size];
+        public int frame_rate;
+
+        private int Y; // Y-coordinate of the dude
+        private int X = 100;
+        private int dudeWidth;
+        private int dudeHeight;
+        public int sprite_index = 0;
+        private int dudeYSpeed = 0; // Vertical speed of the dude
+        private boolean isJumping = false;
+        static private long last_change_time;
+        static private final int sprite_sheet_size = 3;
+
+        public Dude(int starting_y_pos, int animation_rate, int dude_width, int dude_height) {
+            starting_Y = starting_y_pos;
+            frame_rate = animation_rate;
+            dudeWidth = dude_width;
+            dudeHeight = dude_height;
         }
 
+        public void draw_dude() {
+            // Have enough miliseconds passsed
+            if ((System.currentTimeMillis() - last_change_time) > 1000 / frame_rate) 
+            {
+                sprite_index++;
+                // Loop back to 0 if needed
+                if (sprite_index >= sprite_sheet_size) {
+                    sprite_index = 0;
+                }
+                last_change_time = System.currentTimeMillis();
+            }
+
+            Y += dudeYSpeed;
+            if (isJumping == true) {
+                image(sprite_sheet_jump[sprite_index], X, Y, dudeWidth, dudeHeight);
+            } else {
+                image(sprite_sheet_run[sprite_index], X, Y, dudeWidth, dudeHeight);
+            }
+
+            // Check for collision with ground
+            if (Y >= WINDOW_HEIGHT - GROUND_HEIGHT - dudeHeight) {
+                Y = WINDOW_HEIGHT - GROUND_HEIGHT - dudeHeight; // Set dude back on ground
+                isJumping = false; // Reset jumping flag
+            } else {
+                dudeYSpeed += 1; // Apply gravity
+            }
+        }
+
+        public void jump() {
+            if (isJumping == false) {
+                // Space key is pressed and dude is not already jumping
+                isJumping = true;
+                dudeYSpeed = -10; // Set vertical speed to negative value to make the dude jump
+            }
+        }
 
     }
 
@@ -142,8 +209,7 @@ public class longWalkHomeApplet extends Visual {
 
         // i += 1 = 1024 vertex's to sample (90+% performance loss)
         // i += 8 = 128 vertex's to sample (1-2 fps loss)
-        for (int i = 0; i < waveform.length; i += 8) 
-        {
+        for (int i = 0; i < waveform.length; i += 16) {
             float x = i * xStep;
             float y = map(waveform[i], -1, 1, height, 0);
             vertex(x, y);
@@ -171,7 +237,7 @@ public class longWalkHomeApplet extends Visual {
 
     public void draw() {
 
-        background(0, 255, 255); //Cyan makes gaps easy to spot
+        background(0, 255, 255); // Cyan makes gaps easy to spot
 
         // background town image
         BackgroundRepeat.repeat(backgroundImage, 2);
@@ -182,10 +248,16 @@ public class longWalkHomeApplet extends Visual {
         // Liams waveform, just calling it so it can be seen on the screen
         Draw_Waveform();
 
-        //Street lamp
-        streetLampRepeat.repeat(streetLampImage, 5, 380, 380);
         
-        print("\rFPS: "+ frameRate);
+        // Draw dude
+        the_dude.draw_dude();
+        
+        // Street lamp
+        streetLampRepeat.repeat(streetLampImage, 5);
+
+
+
+        print("\rFPS: " + frameRate);
 
     }
 
