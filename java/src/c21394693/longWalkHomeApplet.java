@@ -32,7 +32,7 @@ public class longWalkHomeApplet extends Visual {
     PImage streetLampImage;
     Repeatable_sprite streetLampRepeat = new Repeatable_sprite(0, 369, 500, 0.5f);
     Repeatable_sprite BackgroundRepeat = new Repeatable_sprite(0, 0, 0, 1f);
-    Dude the_dude = new Dude((WINDOW_HEIGHT - GROUND_HEIGHT - 100), 1, 50, 50);
+    Dude the_dude = new Dude((WINDOW_HEIGHT - GROUND_HEIGHT - 100), 1, 100, 100);
 
     public void keyPressed() {
         if (key == ' ') {
@@ -58,14 +58,14 @@ public class longWalkHomeApplet extends Visual {
         /* - - - Finished Audio Setup - - - */
 
         /* - - - Setup the Images - - - */
-        backgroundImage = loadImage("Shapes_and_Sprites/street.png");
+        backgroundImage = loadImage("Shapes_and_Sprites/streetNoSky.png");
         dudeImage = loadImage("Shapes_and_Sprites/dude.png");
         streetLampImage = loadImage("Shapes_and_Sprites/trans_streetlamp.png");
 
         // The dude sprites[3]
         the_dude.sprite_sheet_run[0] = loadImage("Shapes_and_Sprites/dude_sprites/l0_dudeFinal1.png");
-        the_dude.sprite_sheet_run[1] = loadImage("Shapes_and_Sprites/dude_sprites/l1_dudeFinal1.png");
-        the_dude.sprite_sheet_run[2] = loadImage("Shapes_and_Sprites/dude_sprites/l2_dudeFinal1.png");
+        the_dude.sprite_sheet_run[1] = loadImage("Shapes_and_Sprites/dude_sprites/l2_dudeFinal1.png");
+        the_dude.sprite_sheet_run[2] = loadImage("Shapes_and_Sprites/dude_sprites/l1_dudeFinal1.png");
 
         the_dude.sprite_sheet_jump[0] = loadImage("Shapes_and_Sprites/dude_sprites/dude_run_1.jpg");
         the_dude.sprite_sheet_jump[1] = loadImage("Shapes_and_Sprites/dude_sprites/dude_run_2.jpg");
@@ -237,7 +237,7 @@ public class longWalkHomeApplet extends Visual {
 
     public void draw() {
 
-        background(0, 255, 255); // Cyan makes gaps easy to spot
+        background(65, 65, 65); // Cyan makes gaps easy to spot
 
         // background town image
         BackgroundRepeat.repeat(backgroundImage, 2);
