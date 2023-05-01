@@ -28,17 +28,19 @@ public class longWalkHomeApplet extends Visual {
     float[] waveform;
 
     // Images and repeat-sprites
-    PImage backgroundImage;
+    PImage niceBackgroundImage;
+    PImage riotBackgroundImage;
     PImage dudeImage;
     PImage streetLampImage;
-    Repeatable_sprite streetLampRepeat = new Repeatable_sprite(0, 369, 500, 0.5f);
-    Repeatable_sprite BackgroundRepeat = new Repeatable_sprite(0, 0, 0, 1f);
-    Dude the_dude = new Dude((WINDOW_HEIGHT - GROUND_HEIGHT - 120), 1, 150, 150);
-    Meteor the_new_meteor = new Meteor(200, 100, // X, Y position
-     10, 10, 50, 5, 200, 30, 15, //parametres for the waveform bands 
-     -10, 3, 30, // tilt amount (degrees), particle spawn rate, particle max speed
-     6, 150, 150); //frame rate, image width and height
 
+    Repeatable_sprite streetLampRepeat = new Repeatable_sprite(0, 369, 500, 0.5f);
+    Repeatable_sprite BackgroundNiceRepeat = new Repeatable_sprite(0, 0, 0, 1f);
+    Repeatable_sprite BackgroundRiotRepeat = new Repeatable_sprite(0, 0, 0, 1f);
+    Dude the_dude = new Dude((WINDOW_HEIGHT - GROUND_HEIGHT - 120), 2, 150, 150);
+    Meteor the_new_meteor = new Meteor(200, 100, // X, Y position
+            10, 10, 50, 5, 200, 30, 15, // parametres for the waveform bands
+            -10, 30, 10, // tilt amount (degrees), particle spawn rate, particle max speed
+            6, 150, 150); // frame rate, image width and height
 
     public void settings() {
         size(WINDOW_WIDTH, WINDOW_HEIGHT, P2D);
@@ -58,7 +60,8 @@ public class longWalkHomeApplet extends Visual {
         /* - - - Finished Audio Setup - - - */
 
         /* - - - Setup the Images - - - */
-        backgroundImage = loadImage("Shapes_and_Sprites/darkerStreet.png");
+        niceBackgroundImage = loadImage("Shapes_and_Sprites/streetNoSky.png");
+        riotBackgroundImage = loadImage("Shapes_and_Sprites/darkerStreet.png");
         dudeImage = loadImage("Shapes_and_Sprites/dude.png");
         streetLampImage = loadImage("Shapes_and_Sprites/trans_streetlamp.png");
 
@@ -99,7 +102,7 @@ public class longWalkHomeApplet extends Visual {
             scale = scale_factor;
         }
 
-        public void repeat(PImage image_ref, int scroll_speed) {
+        public void repeat(PImage image_ref, int scroll_speed, boolean stop, boolean visable) {
 
             // Figure out how many sprites are required for seamless repetiton horizontally
             int width_taken_up_so_far = 0;
@@ -118,20 +121,22 @@ public class longWalkHomeApplet extends Visual {
             }
 
             for (int i = 0; i < sprites_required; i++) {
-
-                image(image_ref, new_x_position, starting_y_position, image_ref.width * scale,
-                        image_ref.height * scale);
+                if (visable == true) 
+                {
+                    image(image_ref, new_x_position, starting_y_position, image_ref.width * scale,
+                            image_ref.height * scale);
+                }
                 new_x_position += image_ref.width * scale;
                 new_x_position += distance_between_sprites;
             }
 
             starting_x_position -= scroll_speed;
 
-            if ((starting_x_position + (image_ref.width * scale)) < 0) {
+            if ((starting_x_position + (image_ref.width * scale)) < 0 && stop == false) {
 
                 starting_x_position += (image_ref.width * scale);
                 starting_x_position += distance_between_sprites;
-            }
+            } 
         }
 
     }
@@ -236,7 +241,7 @@ public class longWalkHomeApplet extends Visual {
             }
         }
 
-        public void draw_meteor(float scale_amount) //how much should everthing scale as the song goes on? 
+        public void draw_meteor(float scale_amount) // how much should everthing scale as the song goes on?
         {
             pushMatrix();
             noStroke();
@@ -318,9 +323,9 @@ public class longWalkHomeApplet extends Visual {
                     particle_distances_so_far[i] = 0;
                 }
 
-                fill(particle_distances_so_far[i], 255, particle_alphas[i], particle_alphas[i]);
+                fill(135 - particle_distances_so_far[i], 255, particle_alphas[i], particle_alphas[i]);
 
-                ellipse(0, particle_distances_so_far[i], particle_alphas[i] / 16f, particle_alphas[i] / 8f);
+                ellipse(0, particle_distances_so_far[i], particle_alphas[i] / 24f, particle_alphas[i] / 8f);
 
                 particle_distances_so_far[i] -= particle_seeds[i];
                 particle_alphas[i] -= particle_seeds[i];
@@ -331,7 +336,7 @@ public class longWalkHomeApplet extends Visual {
 
             // draw meteor
             pushMatrix();
-            
+
             translate(origin_x, origin_y);
 
             // Have enough miliseconds passsed
@@ -343,15 +348,14 @@ public class longWalkHomeApplet extends Visual {
                 }
                 last_change_time = System.currentTimeMillis();
             }
-            int new_width = meteorWidth + (int)((getAudioPlayer().position() / 1000) * scale_amount);
-            int new_height = meteorHeight + (int)((getAudioPlayer().position() / 1000) * scale_amount);
+            int new_width = meteorWidth + (int) ((getAudioPlayer().position() / 1000) * scale_amount);
+            int new_height = meteorHeight + (int) ((getAudioPlayer().position() / 1000) * scale_amount);
             image(sprite_sheet_fly[meteor_Index], -new_width / 2, -new_height / 2, new_width, new_height);
             popMatrix();
 
         }
 
     }
-
 
     /* Liam's Waveform visual */
     public void Draw_Waveform() {
@@ -383,33 +387,49 @@ public class longWalkHomeApplet extends Visual {
 
     public void draw() {
 
-        background(102, 153, 204);
+        // Sky gradually turns more red
+        background(100 + getAudioPlayer().position() / 1000, 150 - getAudioPlayer().position() / 2000,
+                220 - getAudioPlayer().position() / 1000);
 
         // Get the waveform data from the audio buffer
         buffer = getAudioBuffer();
         waveform = buffer.toArray();
 
         the_new_meteor.draw_meteor(1.2f);
-        
+
         // Liams waveform
         Draw_Waveform();
 
         // background town image
-        BackgroundRepeat.repeat(backgroundImage, 2);
+        if (getAudioPlayer().position() <= 5000) {
+            //show JUST the nice street
+            BackgroundRiotRepeat.repeat(riotBackgroundImage, 2, false, false);
+            BackgroundNiceRepeat.repeat(niceBackgroundImage, 2, false, true);
+        } else if (getAudioPlayer().position() <= 40000) {
+            //start to switch to rioted street
+            BackgroundRiotRepeat.repeat(riotBackgroundImage, 2, false, true);
+            BackgroundNiceRepeat.repeat(niceBackgroundImage, 2, true, true);
+        } else {
+            //turn off nice street
+            BackgroundRiotRepeat.repeat(riotBackgroundImage, 2, false, true);
+            BackgroundNiceRepeat.repeat(niceBackgroundImage, 2, true, false);
+
+        }
 
         // Draw ground
-        fill(200); // Light gray;
+        calculateAverageAmplitude();
+        fill(100 + getAmplitude()*200); // Light gray;
         rect(0, WINDOW_HEIGHT - GROUND_HEIGHT, WINDOW_WIDTH, GROUND_HEIGHT);
 
         // Street lamp
-        streetLampRepeat.repeat(streetLampImage, 5);
+        streetLampRepeat.repeat(streetLampImage, 5, false, true);
 
         // Draw dude
         the_dude.draw_dude();
 
         // the_meteor.Draw_Meteor();
-        
-        print("\rFPS: " + frameRate);
+
+        print("\rFPS: " + frameRate + "    Song position (ms): " + getAudioPlayer().position());
 
     }
 
