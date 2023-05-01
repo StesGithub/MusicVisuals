@@ -1,6 +1,7 @@
 package c21394693;
 
 import ddf.minim.AudioBuffer;
+import ddf.minim.AudioPlayer;
 import ie.tudublin.Visual;
 import processing.core.*;
 import ie.tudublin.VisualException;
@@ -32,16 +33,12 @@ public class longWalkHomeApplet extends Visual {
     PImage streetLampImage;
     Repeatable_sprite streetLampRepeat = new Repeatable_sprite(0, 369, 500, 0.5f);
     Repeatable_sprite BackgroundRepeat = new Repeatable_sprite(0, 0, 0, 1f);
-    Dude the_dude = new Dude((WINDOW_HEIGHT - GROUND_HEIGHT - 100), 1, 150, 150);
-    Meteor the_meteor = new Meteor((WINDOW_HEIGHT - GROUND_HEIGHT), 1, 150, 150);
-    Cesar_Meteor the_new_meteor = new Cesar_Meteor(200, 100, 10, 10, 50, 5, 200,
-            30, 15, -10, 3, 30, 1, 150, 150);
+    Dude the_dude = new Dude((WINDOW_HEIGHT - GROUND_HEIGHT - 120), 1, 150, 150);
+    Meteor the_new_meteor = new Meteor(200, 100, // X, Y position
+     10, 10, 50, 5, 200, 30, 15, //parametres for the waveform bands 
+     -10, 3, 30, // tilt amount (degrees), particle spawn rate, particle max speed
+     6, 150, 150); //frame rate, image width and height
 
-    public void keyPressed() {
-        if (key == ' ') {
-            the_dude.jump();
-        }
-    }
 
     public void settings() {
         size(WINDOW_WIDTH, WINDOW_HEIGHT, P2D);
@@ -75,12 +72,6 @@ public class longWalkHomeApplet extends Visual {
         the_dude.sprite_sheet_jump[2] = loadImage("Shapes_and_Sprites/dude_sprites/dude_run_3.jpg");
 
         // Meteor sprites
-        
-        the_meteor.sprite_sheet_fly[0] = loadImage("Shapes_and_Sprites/meteorLayers/l0_sprite_1.png");
-        the_meteor.sprite_sheet_fly[1] = loadImage("Shapes_and_Sprites/meteorLayers/l1_sprite_1.png");
-        the_meteor.sprite_sheet_fly[2] = loadImage("Shapes_and_Sprites/meteorLayers/l2_sprite_1.png");
-        the_meteor.sprite_sheet_fly[3] = loadImage("Shapes_and_Sprites/meteorLayers/l3_sprite_1.png");
-        // testing cesar version
         the_new_meteor.sprite_sheet_fly[0] = loadImage("Shapes_and_Sprites/meteorLayers/l0_sprite_1.png");
         the_new_meteor.sprite_sheet_fly[1] = loadImage("Shapes_and_Sprites/meteorLayers/l1_sprite_1.png");
         the_new_meteor.sprite_sheet_fly[2] = loadImage("Shapes_and_Sprites/meteorLayers/l2_sprite_1.png");
@@ -152,13 +143,11 @@ public class longWalkHomeApplet extends Visual {
         public PImage[] sprite_sheet_jump = new PImage[sprite_sheet_size];
         public int frame_rate;
 
-        private int Y; // Y-coordinate of the dude
         private int X = 100;
         private int dudeWidth;
         private int dudeHeight;
         public int sprite_index = 0;
-        private int dudeYSpeed = 0; // Vertical speed of the dude
-        private boolean isJumping = false;
+
         static private long last_change_time;
         static private final int sprite_sheet_size = 3;
 
@@ -180,34 +169,12 @@ public class longWalkHomeApplet extends Visual {
                 last_change_time = System.currentTimeMillis();
             }
 
-            Y += dudeYSpeed;
-            if (isJumping == true) {
-                image(sprite_sheet_jump[sprite_index], X, Y, dudeWidth, dudeHeight);
-            } else {
-                image(sprite_sheet_run[sprite_index], X, Y, dudeWidth, dudeHeight);
-            }
-
-            // Check for collision with ground
-            if (Y >= WINDOW_HEIGHT - GROUND_HEIGHT - dudeHeight) {
-                Y = WINDOW_HEIGHT - GROUND_HEIGHT - dudeHeight; // Set dude back on ground
-                isJumping = false; // Reset jumping flag
-            } else {
-                dudeYSpeed += 1; // Apply gravity
-            }
+            image(sprite_sheet_run[sprite_index], X, starting_Y, dudeWidth, dudeHeight);
         }
-
-        public void jump() {
-            if (isJumping == false) {
-                // Space key is pressed and dude is not already jumping
-                isJumping = true;
-                dudeYSpeed = -10; // Set vertical speed to negative value to make the dude jump
-            }
-        }
-
     }
 
     // The meteor class, draws waveform and particles off incoming meteor
-    class Cesar_Meteor {
+    class Meteor {
         public int origin_x; // new scene origin
         public int origin_y;
         public int initial_gap_x; // how far away should the corner waveforms be from the meteor
@@ -236,7 +203,7 @@ public class longWalkHomeApplet extends Visual {
 
         static private final int meteor_spriteSheet_size = 4;
 
-        public Cesar_Meteor(int met_origin_x, int met_origin_y, int band_initial_gap_x, int band_initial_gap_y,
+        public Meteor(int met_origin_x, int met_origin_y, int band_initial_gap_x, int band_initial_gap_y,
                 int band_max_height, int band_rect_width, int band_sensitivity,
                 int met_bands_to_do, int met_roundedness, int met_degrees_tilt, int met_particle_spawn_rate,
                 int particle_max_speed, int animation_rate, int met_width, int met_height) {
@@ -269,7 +236,8 @@ public class longWalkHomeApplet extends Visual {
             }
         }
 
-        public void draw_meteor() {
+        public void draw_meteor(float scale_amount) //how much should everthing scale as the song goes on? 
+        {
             pushMatrix();
             noStroke();
             colorMode(RGB);
@@ -363,6 +331,7 @@ public class longWalkHomeApplet extends Visual {
 
             // draw meteor
             pushMatrix();
+            
             translate(origin_x, origin_y);
 
             // Have enough miliseconds passsed
@@ -374,49 +343,15 @@ public class longWalkHomeApplet extends Visual {
                 }
                 last_change_time = System.currentTimeMillis();
             }
-            image(sprite_sheet_fly[meteor_Index], -meteorWidth / 2, -meteorHeight / 2, meteorWidth, meteorHeight);
+            int new_width = meteorWidth + (int)((getAudioPlayer().position() / 1000) * scale_amount);
+            int new_height = meteorHeight + (int)((getAudioPlayer().position() / 1000) * scale_amount);
+            image(sprite_sheet_fly[meteor_Index], -new_width / 2, -new_height / 2, new_width, new_height);
             popMatrix();
 
         }
 
     }
 
-    class Meteor {
-
-        public int starting_Y;
-        // set images in setup()
-        public PImage[] sprite_sheet_fly = new PImage[4];
-        public int frame_rate;
-
-        private int meteor_Index = 0;
-        private int Y;
-        private int X = 100;
-        private int meteorWidth;
-        private int meteorHeight;
-        public int sprite_index = 0;
-        static private long last_change_time;
-        static private final int meteor_spriteSheet_size = 4;
-
-        public Meteor(int starting_y_pos, int animation_rate, int meteor_width, int meteor_height) {
-            starting_Y = starting_y_pos;
-            frame_rate = animation_rate;
-            meteorWidth = meteor_width;
-            meteorHeight = meteor_height;
-        }
-
-        /* Stephens Meteor */
-        public void Draw_Meteor() {
-            // Have enough miliseconds passsed
-            if ((System.currentTimeMillis() - last_change_time) > 1000 / frame_rate) {
-                meteor_Index++;
-                // Loop back to 0 if needed
-                if (meteor_Index >= meteor_spriteSheet_size) {
-                    meteor_Index = 0;
-                }
-                last_change_time = System.currentTimeMillis();
-            }
-        }
-    }
 
     /* Liam's Waveform visual */
     public void Draw_Waveform() {
@@ -454,9 +389,9 @@ public class longWalkHomeApplet extends Visual {
         buffer = getAudioBuffer();
         waveform = buffer.toArray();
 
-        the_new_meteor.draw_meteor();
+        the_new_meteor.draw_meteor(1.2f);
         
-        // Liams waveform, just calling it so it can be seen on the screen
+        // Liams waveform
         Draw_Waveform();
 
         // background town image
