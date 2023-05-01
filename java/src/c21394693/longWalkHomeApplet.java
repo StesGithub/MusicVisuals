@@ -238,7 +238,7 @@ public class longWalkHomeApplet extends Visual {
     public void draw() {
 
         background(102, 153, 204); // Cyan makes gaps easy to spot
-
+        Draw_Waveform();
         // background town image
         BackgroundRepeat.repeat(backgroundImage, 2);
 
@@ -246,7 +246,7 @@ public class longWalkHomeApplet extends Visual {
         fill(200); // Light gray;
         rect(0, WINDOW_HEIGHT - GROUND_HEIGHT, WINDOW_WIDTH, GROUND_HEIGHT);
         // Liams waveform, just calling it so it can be seen on the screen
-       // Draw_Waveform();
+        
 
         
         // Draw dude
