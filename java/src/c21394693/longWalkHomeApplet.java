@@ -7,25 +7,17 @@ import processing.core.*;
 import ie.tudublin.VisualException;
 
 /*
- * This class creates "dude" and meteor sprites and waveforms 
+ * This class creates "dude" and meteor sprites and waveforms
  * and runs a scrolling background and lamps to make it look like hes moving through a town
  * Music to be added and other events to make it actually fun to watch
  */
 
 public class longWalkHomeApplet extends Visual {
 
-    private static final int FIREBALL_RADIUS = 15;
-    private static final int FIREBALL_SPEED = 10;
-    private static final int SMOOTH_TRANSITION_TIME = 3000;
-    private int FIREBALL_COLOR;
-
-    private int currentColor;
-    private int nextColor;
-    private int transitionStartTime;
-    private ArrayList<Fireball> fireballs;
-    private static final int WINDOW_WIDTH = 1200; // Width of game window
-    private static final int WINDOW_HEIGHT = 600; // Height of game window
-    private static final int GROUND_HEIGHT = 50; // Height of the ground
+    private static final int WINDOW_WIDTH   = 1200; // Width of game window
+    private static final int WINDOW_HEIGHT  = 600;  // Height of game window
+    private static final int GROUND_HEIGHT  = 50;   // Height of the ground
+   
 
     /* - - - Images and repeat-sprites - - - */
     PImage niceBackgroundImage;
@@ -256,7 +248,7 @@ public class longWalkHomeApplet extends Visual {
 
             /* - - - top left of mini waveform - - - */
             // set band_amp to a band value from the lowest quartile of smoothed bands
-            float band_amp = (getSmoothedBands()[getSmoothedBands().length / 4] + 1) * sensitivity;
+            float band_amp = (smooth_bands[smooth_bands.length / 4] + 1) * sensitivity;
             int start_x = -initial_gap_x - rect_width;
             for (int i = 1; i <= bands_to_do; i++) {
                 fill(band_amp, band_amp / 4, band_amp / 4, 255 / i);
@@ -270,7 +262,7 @@ public class longWalkHomeApplet extends Visual {
             }
 
             /* - - - top right of mini waveform - - - */
-            band_amp = getSmoothedBands()[(getSmoothedBands().length / 4) * 3] * sensitivity;
+            band_amp = smooth_bands[(smooth_bands.length / 4) * 3] * sensitivity;
             start_x = initial_gap_x;
             for (int i = 1; i <= bands_to_do; i++) {
                 fill(band_amp, band_amp / 4, band_amp / 4, 255 / i);
@@ -284,7 +276,7 @@ public class longWalkHomeApplet extends Visual {
             }
 
             /* - - - bottom right of mini waveform - - - */
-            band_amp = getSmoothedBands()[(getSmoothedBands().length / 4) * 2] * sensitivity;
+            band_amp = smooth_bands[(smooth_bands.length / 4) * 2] * sensitivity;
             start_x = initial_gap_x;
             for (int i = 1; i <= bands_to_do; i++) {
                 fill(band_amp / 2, band_amp / 10, band_amp / 10, 222 / i);
@@ -298,7 +290,7 @@ public class longWalkHomeApplet extends Visual {
             }
 
             /* - - - bottom left of mini waveform - - - */
-            band_amp = getSmoothedBands()[(getSmoothedBands().length - 3)] * sensitivity;
+            band_amp = smooth_bands[(smooth_bands.length - 3)] * sensitivity;
             start_x = -initial_gap_x - rect_width;
             for (int i = 1; i <= bands_to_do; i++) {
                 fill(band_amp / 2, band_amp / 10, band_amp / 10, 222 / i);
@@ -374,25 +366,23 @@ public class longWalkHomeApplet extends Visual {
 
         // Calculate the step size for the x-axis, +0.02 so that it reaches the end of
         // the screen
-        int xStep = (int) (width / (float) getSmoothedBands().length);
+        int xStep = (int)(width / (float)smooth_bands.length);
 
-        // Draw the waveform as a series of connected points
-        beginShape();
 
         // i += 1 = 1024 vertex's to sample (90+% performance loss)
         // i += 8 = 128 vertex's to sample (1-2 fps loss)
         rectMode(CENTER);
 
-        for (int i = 0; i < getSmoothedBands().length; i++) {
+        for (int i = 0; i < smooth_bands.length; i++)
+        {
             fill(255, 100, 100, 255);
-            int x = i * xStep + (xStep / 2);
-            int y = (int) (getSmoothedBands()[i] * 5);
-
-            rect(x, Y_Position, xStep, constrain(y, 100, max_height), 50);
+            int x = i * xStep + (xStep/2);
+            int y = (int)(smooth_bands[i] * 5);
+           
+           
+            rect(x, Y_Position, xStep, constrain(y, 100, max_height), 50 );
         }
         rectMode(CORNER);
-        endShape();
-        noStroke();
     }
 
     /* Oisin background */
@@ -410,6 +400,8 @@ public class longWalkHomeApplet extends Visual {
             e.printStackTrace();
         }
         calculateFrequencyBands();
+        smooth_bands = getSmoothedBands();
+       
 
         // Sky gradually turns more red
         background(100 + getAudioPlayer().position() / 1000, 150 - getAudioPlayer().position() / 2000,
