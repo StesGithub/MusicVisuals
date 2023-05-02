@@ -86,7 +86,6 @@ public class longWalkHomeApplet extends Visual {
         println("Starting drawing now!");
     }
 
-
     /*
      * A class which takes in a PImage reference and makes sure that any loading and
      * unloading takes place off-screen, allowing for seamless reptition
