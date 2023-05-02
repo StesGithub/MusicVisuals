@@ -17,7 +17,6 @@ public class longWalkHomeApplet extends Visual {
 
     private static final int FIREBALL_RADIUS = 15;
     private static final int FIREBALL_SPEED = 10;
-    private int FIREBALL_COLOR;
     private float black_screen_alpha = WINDOW_HEIGHT;
     private boolean start_song = true;
     private boolean end_song = false;
@@ -91,7 +90,6 @@ public class longWalkHomeApplet extends Visual {
         fireballs = new ArrayList<>();
         noStroke();
         ellipseMode(RADIUS);
-        FIREBALL_COLOR = color(255, 165, 0);
 
         println("Starting drawing now!");
     }

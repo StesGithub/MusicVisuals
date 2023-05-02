@@ -2,16 +2,8 @@ package c21415142;
 
 import ie.tudublin.Visual;
 import ie.tudublin.VisualException;
-import processing.core.PApplet;
 import processing.core.PFont;
 import processing.core.PGraphics;
-
-import java.io.File;
-import java.util.Random;
-
-import c21415142.vector3;
-import c21415142.misc_math;
-
 
 
 
@@ -32,9 +24,9 @@ public class Cesar_2 extends Visual
 
     static vector3 scene_origin             = new vector3(0, 0, 0);
     static float camera_movement_speed = 2f;
-    static float camera_movement_horizontal = 50f;
-    static float camera_movement_up_down = 30f;
-    static float camera_movement_front_back = 1f;
+    static float camera_movement_horizontal = 40f;
+    static float camera_movement_up_down = 50f;
+    static float camera_movement_front_back = 0.7f;
     static float camera_FOV = 80f;
     
     //Music
@@ -117,7 +109,7 @@ public class Cesar_2 extends Visual
         frameRate(30); //lock to 30 fps
         
         colorMode(HSB);
-        setFrameSize(512); 
+        setFrameSize(1024); 
         
         scene_camera = new Cesar_Camera(new vector3(0, 0, 0));
         scene_camera.end_vision_distance = 999990;
@@ -338,6 +330,7 @@ public class Cesar_2 extends Visual
         text(("\n\n\nCamera Offsets: " + camera_offset_to_apply[0].string_version(2) ), width/3.2f, (height/3) );
         text(("\n\n\n\nCamera FOV: " + scene_camera.FOV ), width/3.2f, (height/3) );
         text(("\n\n\n\n\nAmplitude(): " + getAmplitude() ), width/3.2f, (height/3) );
+        text(("\n\n\n\n\n\nUSE WASDEQ, XZ Keys to control camera" ), width/3.2f, (height/3) );
         
         HUD.endDraw();
         image(HUD, 0, 0); // Draw the HUD graphics onto the main canvas at position (0, 0)

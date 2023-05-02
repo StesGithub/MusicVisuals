@@ -13,6 +13,6 @@ public class Cesar_2_main
     public static void main(String[] args) 
     {
         String[] a = {"MAIN"};
-        processing.core.PApplet.runSketch(a, new Cesar_3());
+        processing.core.PApplet.runSketch(a, new Cesar_2());
     }
 }
