@@ -488,6 +488,10 @@ public class longWalkHomeApplet extends Visual {
                     + " - ROBERT FROST",
 
                     width / 2, black_screen_alpha);
+        } else {
+
+            fill(240);
+            text("Thank you", width / 2, black_screen_alpha);
         }
         // Start playing sound at a certain point in the fade in sequence
         if (start_song == true && black_screen_alpha <= 175) {
