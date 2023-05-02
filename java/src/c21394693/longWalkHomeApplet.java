@@ -56,11 +56,11 @@ public class longWalkHomeApplet extends Visual {
     public void setup() {
         println("Setting up scene now");
 
-        //load our font
-        font = createFont("arabic.ttf", 42);
+        // load our font
+        font = createFont("pixel.otf", 42);
         textFont(font, 42);
         textAlign(CENTER, TOP);
-        
+
         frameRate(40); // 40 allows for minor frame rate dips to 30
 
         /* - - - Setup the Audio - - - */
@@ -470,36 +470,49 @@ public class longWalkHomeApplet extends Visual {
         the_dude.draw_dude();
 
         // prevent integer underflow
-        if (!(black_screen_alpha < -100) && end_song == false) {
+        if (!(black_screen_alpha < -1000) && end_song == false) {
             black_screen_alpha -= 1; // used to control fade in speed
         }
-        
+
         // Black screen, used for fade in
         fill(0, 0, 0, black_screen_alpha);
         rect(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
-        
-        fill(240);
-        text("Hllo", width/2, black_screen_alpha);
 
+        if (end_song == false) {
+            fill(240);
+            text("\"SOME SAY THE WORLD WILL END IN FIRE, SOME SAY IN ICE,\n"
+                    + "FROM WHAT I'VE TASTED OF DESIRE, I HOLD WITH THOSE WHO FAVOUR FIRE\n"
+                    + "BUT IF IT HAD TO PERISH TWICE, I THINK I KNOW ENOUGH OF HATE\n"
+                    + "TO SAY THAT FOR DESTRUCTION, ICE IS ALSO GREAT\n"
+                    + "AND WOULD SUFFICE\"\n\n"
+                    + " - ROBERT FROST",
+
+                    width / 2, black_screen_alpha);
+        }
         // Start playing sound at a certain point in the fade in sequence
         if (start_song == true && black_screen_alpha <= 175) {
             println("\nPLAYING SONG NOW");
             getAudioPlayer().cue(0);
             getAudioPlayer().play();
-            
+
             start_song = false;
         }
-        
-        // start fade out 5 seconds before the end
-        if (getAudioPlayer().length() - getAudioPlayer().position() <= 5000) {
+
+        // start fade out 10 seconds before the end
+        if (getAudioPlayer().length() - getAudioPlayer().position() <= 10000) {
+            if (black_screen_alpha < -1) {
+                black_screen_alpha = 0;
+            }
+
             black_screen_alpha += 0.6f;
             start_song = false;
             end_song = true;
             println("\nENDING SONG NOW");
         }
+
         if (black_screen_alpha >= 300 && end_song == true) {
             println("\nThank you, Please have a good day,\n",
-            "A prosperous year,\nand a joyful century"); //end message for terminal
+                    "A prosperous year,\nand a joyful century"); // end message for terminal
             exit();
         }
 
