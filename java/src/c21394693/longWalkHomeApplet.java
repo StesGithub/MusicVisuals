@@ -18,8 +18,10 @@ public class longWalkHomeApplet extends Visual {
     private static final int FIREBALL_RADIUS = 15;
     private static final int FIREBALL_SPEED = 10;
     private int FIREBALL_COLOR;
-    private int start_song_offset = 255;
+    private float black_screen_alpha = WINDOW_HEIGHT;
     private boolean start_song = true;
+    private boolean end_song = false;
+    private PFont font;
 
     private ArrayList<Fireball> fireballs;
     private static final int WINDOW_WIDTH = 1200; // Width of game window
@@ -43,7 +45,7 @@ public class longWalkHomeApplet extends Visual {
             150, 150); // Dude width, height
 
     Meteor the_meteor = new Meteor(200, 100, // X, Y position
-            10, 10, 80, 8, 5, 40, 15, // parametres for the waveform bands
+            10, 10, 80, 8, 5, 30, 5, // parametres for the waveform bands
             -10, 50, 10, // tilt amount (degrees), particle spawn rate, particle max speed
             6, 150, 150); // frame rate, image width and height
 
@@ -54,6 +56,11 @@ public class longWalkHomeApplet extends Visual {
     public void setup() {
         println("Setting up scene now");
 
+        //load our font
+        font = createFont("arabic.ttf", 42);
+        textFont(font, 42);
+        textAlign(CENTER, TOP);
+        
         frameRate(40); // 40 allows for minor frame rate dips to 30
 
         /* - - - Setup the Audio - - - */
@@ -403,7 +410,8 @@ public class longWalkHomeApplet extends Visual {
         smooth_bands = getSmoothedBands();
 
         // Sky gradually turns more red
-        background(100 + getAudioPlayer().position() / 1000, 150 - getAudioPlayer().position() / 2000,
+        background(100 + (getAudioPlayer().position() / 1000) + 100 * getSmoothedAmplitude(),
+                150 - getAudioPlayer().position() / 2000,
                 220 - getAudioPlayer().position() / 1000);
 
         the_meteor.draw_meteor(1.2f);
@@ -411,9 +419,10 @@ public class longWalkHomeApplet extends Visual {
         // Liams waveform
         Draw_Waveform((int) (height), 800);
 
-
         // Move and draw the fireballs
         for (int i = fireballs.size() - 1; i >= 0; i--) {
+            noStroke();
+            fill(100 + (2000 * getSmoothedAmplitude()), 1000 * getSmoothedAmplitude(), 100 * getSmoothedAmplitude());
             Fireball fireball = fireballs.get(i);
             fireball.move();
             fireball.init();
@@ -434,13 +443,13 @@ public class longWalkHomeApplet extends Visual {
             if (random(1) < 0.05) {
                 fireballs.add(new Fireball());
             }
-            
+
             // start to switch to rioted street after 40,000 miliseconds (40 seconds)
             BackgroundRiotRepeat.repeat(riotBackgroundImage, 2, false, true);
             BackgroundNiceRepeat.repeat(niceBackgroundImage, 2, true, true);
         } else {
             // Create new fireballs at the top of the screen
-            if (random(1) < 0.09) {
+            if (random(1) < 0.12) {
                 fireballs.add(new Fireball());
             }
             // turn off nice street all together after 40 seconds
@@ -449,39 +458,53 @@ public class longWalkHomeApplet extends Visual {
 
         }
 
-        
         // Draw ground
         calculateAverageAmplitude();
         fill(100 + getAmplitude() * 200); // Light gray + beat;
         rect(0, WINDOW_HEIGHT - GROUND_HEIGHT, WINDOW_WIDTH, GROUND_HEIGHT);
 
-        // Street lamp  
+        // Street lamp
         streetLampRepeat.repeat(streetLampImage, 5, false, true);
 
         // Draw dude
         the_dude.draw_dude();
-        
-        //prevent integer underflow
-        if( !(start_song_offset < -10) )
-        {
-            start_song_offset -= 1;
-        }
 
-        fill(0,0,0, start_song_offset);
-        rect(0,0,WINDOW_WIDTH, WINDOW_HEIGHT);
+        // prevent integer underflow
+        if (!(black_screen_alpha < -100) && end_song == false) {
+            black_screen_alpha -= 1; // used to control fade in speed
+        }
         
-        if (start_song == true && start_song_offset <= 175)
-        {
+        // Black screen, used for fade in
+        fill(0, 0, 0, black_screen_alpha);
+        rect(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
+        
+        fill(240);
+        text("Hllo", width/2, black_screen_alpha);
+
+        // Start playing sound at a certain point in the fade in sequence
+        if (start_song == true && black_screen_alpha <= 175) {
             println("\nPLAYING SONG NOW");
             getAudioPlayer().cue(0);
             getAudioPlayer().play();
-
+            
             start_song = false;
         }
+        
+        // start fade out 5 seconds before the end
+        if (getAudioPlayer().length() - getAudioPlayer().position() <= 5000) {
+            black_screen_alpha += 0.6f;
+            start_song = false;
+            end_song = true;
+            println("\nENDING SONG NOW");
+        }
+        if (black_screen_alpha >= 300 && end_song == true) {
+            println("\nThank you, Please have a good day,\n",
+            "A prosperous year,\nand a joyful century"); //end message for terminal
+            exit();
+        }
 
-
-        print("\rFPS: " + frameRate + "\t\tSong position (ms): " + getAudioPlayer().position() + "\t\tStart offset: " + start_song_offset);
-
+        print("\rFPS: " + frameRate + "\t\tSong position (ms): " + getAudioPlayer().position() + "\t\tblack alpha: "
+                + black_screen_alpha);
 
     }
 
@@ -489,7 +512,6 @@ public class longWalkHomeApplet extends Visual {
     private class Fireball {
         float x, y;
         float speedX, speedY;
-        int color;
         int extra; // get bigger as the song goes on
 
         public Fireball() {
@@ -497,7 +519,6 @@ public class longWalkHomeApplet extends Visual {
             y = -FIREBALL_RADIUS;
             speedX = random(-2, 2);
             speedY = FIREBALL_SPEED;
-            color = FIREBALL_COLOR;
         }
 
         public void move() {
@@ -507,7 +528,6 @@ public class longWalkHomeApplet extends Visual {
 
         public void init() {
 
-            fill(color);
             extra = getAudioPlayer().position() / 8000;
             ellipse(x, y, FIREBALL_RADIUS + extra, FIREBALL_RADIUS + extra);
         }
