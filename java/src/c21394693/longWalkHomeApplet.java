@@ -1,8 +1,10 @@
 package c21394693;
 
-import ddf.minim.AudioBuffer;
+
+
 import ie.tudublin.Visual;
 import processing.core.*;
+import ie.tudublin.VisualException;
 
 /*
  * This class creates "dude" and meteor sprites and waveforms 
@@ -12,11 +14,10 @@ import processing.core.*;
 
 public class longWalkHomeApplet extends Visual {
 
-    private static final int WINDOW_WIDTH = 1200; // Width of game window
-    private static final int WINDOW_HEIGHT = 600; // Height of game window
-    private static final int GROUND_HEIGHT = 50; // Height of the ground
-    private AudioBuffer buffer; // Buffer to store audio data
-    private float[] waveform;
+    private static final int WINDOW_WIDTH   = 1200; // Width of game window
+    private static final int WINDOW_HEIGHT  = 600;  // Height of game window
+    private static final int GROUND_HEIGHT  = 50;   // Height of the ground
+   
 
     /* - - - Images and repeat-sprites - - - */
     PImage niceBackgroundImage;
@@ -29,14 +30,17 @@ public class longWalkHomeApplet extends Visual {
     Repeatable_sprite BackgroundRiotRepeat = new Repeatable_sprite(0, 0, 0, 1f);
     /* - - - - - - - - - - - - - - - - - - - */
 
-    Dude the_dude = new Dude((WINDOW_HEIGHT - GROUND_HEIGHT - 120), // Y-Axis
-            2, // Animation-rate
-            150, 150); // Dude width, height
 
-    Meteor the_meteor = new Meteor(200, 100, // X, Y position
-            10, 10, 50, 5, 200, 30, 15, // parametres for the waveform bands
-            -10, 30, 10, // tilt amount (degrees), particle spawn rate, particle max speed
-            6, 150, 150); // frame rate, image width and height
+    Dude the_dude = new Dude( (WINDOW_HEIGHT - GROUND_HEIGHT - 120), // Y-Axis
+                                2,          // Animation-rate
+                                150, 150);  // Dude width, height
+
+
+    Meteor the_meteor = new Meteor(200, 100,    // X, Y position
+            10, 10, 80, 8, 5, 40, 15,         // parametres for the waveform bands
+            -10, 50, 10,    // tilt amount (degrees), particle spawn rate, particle max speed
+            6, 150, 150);   // frame rate, image width and height
+
 
     public void settings() {
         size(WINDOW_WIDTH, WINDOW_HEIGHT, P2D);
@@ -353,25 +357,32 @@ public class longWalkHomeApplet extends Visual {
     }
 
     /* Liam's Waveform visual */
-    public void Draw_Waveform() {
+    public void Draw_Waveform(int Y_Position, int max_height) {
         // Set the stroke color to red and stroke weight to 2
         stroke(255, 0, 0);
         strokeWeight(2);
 
         // Calculate the step size for the x-axis, +0.02 so that it reaches the end of
         // the screen
-        float xStep = width / (float) waveform.length + 0.02f;
-
+        int xStep = (int)(width / (float)getSmoothedBands().length);
+        
         // Draw the waveform as a series of connected points
         beginShape();
 
         // i += 1 = 1024 vertex's to sample (90+% performance loss)
         // i += 8 = 128 vertex's to sample (1-2 fps loss)
-        for (int i = 0; i < waveform.length; i += 16) {
-            float x = i * xStep;
-            float y = map(waveform[i], -1, 1, height, 0);
-            vertex(x, y);
+        rectMode(CENTER);
+
+        for (int i = 0; i < getSmoothedBands().length; i++) 
+        {
+            fill(255, 100, 100, 255);
+            int x = i * xStep + (xStep/2);
+            int y = (int)(getSmoothedBands()[i] * 5);
+            
+            
+            rect(x, Y_Position, xStep, constrain(y, 100, max_height), 50 );
         }
+        rectMode(CORNER);
         endShape();
     }
 
@@ -382,18 +393,22 @@ public class longWalkHomeApplet extends Visual {
 
     public void draw() {
 
+        //Analyse Audio
+        calculateAverageAmplitude();
+        try { calculateFFT(); }
+        catch(VisualException e)    { e.printStackTrace(); }
+        calculateFrequencyBands();
+        
+
         // Sky gradually turns more red
         background(100 + getAudioPlayer().position() / 1000, 150 - getAudioPlayer().position() / 2000,
                 220 - getAudioPlayer().position() / 1000);
-
-        // Get the waveform data from the audio buffer
-        buffer = getAudioBuffer();
-        waveform = buffer.toArray();
+       
 
         the_meteor.draw_meteor(1.2f);
 
         // Liams waveform
-        Draw_Waveform();
+        Draw_Waveform((int)(height), 800);
 
         // background town image
         if (getAudioPlayer().position() <= 5000) {
