@@ -14,10 +14,15 @@ import ie.tudublin.VisualException;
 
 public class longWalkHomeApplet extends Visual {
 
-    private static final int WINDOW_WIDTH   = 1200; // Width of game window
-    private static final int WINDOW_HEIGHT  = 600;  // Height of game window
-    private static final int GROUND_HEIGHT  = 50;   // Height of the ground
-   
+    private static final int FIREBALL_RADIUS = 15;
+    private static final int FIREBALL_SPEED = 10;
+    private int FIREBALL_COLOR;
+
+    private ArrayList<Fireball> fireballs;
+    private static final int WINDOW_WIDTH = 1200; // Width of game window
+    private static final int WINDOW_HEIGHT = 600; // Height of game window
+    private static final int GROUND_HEIGHT = 50; // Height of the ground
+    private static float[] smooth_bands;
 
     /* - - - Images and repeat-sprites - - - */
     PImage niceBackgroundImage;
@@ -362,7 +367,7 @@ public class longWalkHomeApplet extends Visual {
     public void Draw_Waveform(int Y_Position, int max_height) {
         // Set the stroke color to red and stroke weight to 2
         stroke(255, 0, 0);
-        strokeWeight(2);
+        strokeWeight(10);
 
         // Calculate the step size for the x-axis, +0.02 so that it reaches the end of
         // the screen
@@ -383,6 +388,7 @@ public class longWalkHomeApplet extends Visual {
             rect(x, Y_Position, xStep, constrain(y, 100, max_height), 50 );
         }
         rectMode(CORNER);
+        noStroke();
     }
 
     /* Oisin background */
