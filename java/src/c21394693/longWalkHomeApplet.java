@@ -2,6 +2,7 @@ package c21394693;
 
 import java.util.ArrayList;
 
+import ddf.minim.AudioPlayer;
 import ie.tudublin.Visual;
 import processing.core.*;
 import ie.tudublin.VisualException;
@@ -371,29 +372,21 @@ public class longWalkHomeApplet extends Visual {
 
         // Calculate the step size for the x-axis, +0.02 so that it reaches the end of
         // the screen
-        int xStep = (int)(width / (float)smooth_bands.length);
-
+        int xStep = (int) (width / (float) smooth_bands.length);
 
         // i += 1 = 1024 vertex's to sample (90+% performance loss)
         // i += 8 = 128 vertex's to sample (1-2 fps loss)
         rectMode(CENTER);
 
-        for (int i = 0; i < smooth_bands.length; i++)
-        {
+        for (int i = 0; i < smooth_bands.length; i++) {
             fill(255, 100, 100, 255);
-            int x = i * xStep + (xStep/2);
-            int y = (int)(smooth_bands[i] * 5);
-           
-           
-            rect(x, Y_Position, xStep, constrain(y, 100, max_height), 50 );
+            int x = i * xStep + (xStep / 2);
+            int y = (int) (smooth_bands[i] * 5);
+
+            rect(x, Y_Position, xStep, constrain(y, 100, max_height), 50);
         }
         rectMode(CORNER);
         noStroke();
-    }
-
-    /* Oisin background */
-    public void Draw_Background() {
-        /* background visual code */
     }
 
     public void draw() {
@@ -407,7 +400,6 @@ public class longWalkHomeApplet extends Visual {
         }
         calculateFrequencyBands();
         smooth_bands = getSmoothedBands();
-       
 
         // Sky gradually turns more red
         background(100 + getAudioPlayer().position() / 1000, 150 - getAudioPlayer().position() / 2000,
@@ -429,7 +421,6 @@ public class longWalkHomeApplet extends Visual {
             }
         }
 
-       
         the_meteor.draw_meteor(1.2f);
 
         // Liams waveform
@@ -456,7 +447,6 @@ public class longWalkHomeApplet extends Visual {
         fill(100 + getAmplitude() * 200); // Light gray + beat;
         rect(0, WINDOW_HEIGHT - GROUND_HEIGHT, WINDOW_WIDTH, GROUND_HEIGHT);
 
-
         // Street lamp
         streetLampRepeat.repeat(streetLampImage, 5, false, true);
 
@@ -466,10 +456,12 @@ public class longWalkHomeApplet extends Visual {
         print("\rFPS: " + frameRate + "\t\tSong position (ms): " + getAudioPlayer().position());
     }
 
+    // Oisins work
     private class Fireball {
         float x, y;
         float speedX, speedY;
         int color;
+        int extra; // get bigger as the song goes on
 
         public Fireball() {
             x = random(WINDOW_WIDTH);
@@ -487,9 +479,9 @@ public class longWalkHomeApplet extends Visual {
         public void init() {
 
             fill(color);
-            ellipse(x, y, FIREBALL_RADIUS, FIREBALL_RADIUS);
+            extra = getAudioPlayer().position() / 8000;
+            ellipse(x, y, FIREBALL_RADIUS + extra, FIREBALL_RADIUS + extra);
         }
 
-        
     }
 }
