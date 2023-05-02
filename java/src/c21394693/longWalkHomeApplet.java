@@ -18,6 +18,8 @@ public class longWalkHomeApplet extends Visual {
     private static final int FIREBALL_RADIUS = 15;
     private static final int FIREBALL_SPEED = 10;
     private int FIREBALL_COLOR;
+    private int start_song_offset = 255;
+    private boolean start_song = true;
 
     private ArrayList<Fireball> fireballs;
     private static final int WINDOW_WIDTH = 1200; // Width of game window
@@ -30,7 +32,7 @@ public class longWalkHomeApplet extends Visual {
     PImage riotBackgroundImage;
     PImage dudeImage;
     PImage streetLampImage;
-    Repeatable_sprite streetLampRepeat = new Repeatable_sprite(0, 369, 500, 0.5f); // start at X: 0, Y: 369, Gap size:
+    Repeatable_sprite streetLampRepeat = new Repeatable_sprite(0, 380, 500, 3.5f); // start at X: 0, Y: 369, Gap size:
                                                                                    // 500, Scale: 0.5
     Repeatable_sprite BackgroundNiceRepeat = new Repeatable_sprite(0, 0, 0, 1f);
     Repeatable_sprite BackgroundRiotRepeat = new Repeatable_sprite(0, 0, 0, 1f);
@@ -58,14 +60,13 @@ public class longWalkHomeApplet extends Visual {
         setFrameSize(1024); // "Frame" here refers to the audio buffer, increase if audio issues
         startMinim();
         loadAudio("endOfTheWorld.mp3");
-        getAudioPlayer().cue(0);
-        getAudioPlayer().play();
+
         /* - - - - - - - - - - - - - - - */
 
         /* - - - Setup the Images - - - */
         niceBackgroundImage = loadImage("Shapes_and_Sprites/streetNoSky.png");
         riotBackgroundImage = loadImage("Shapes_and_Sprites/darkerStreet.png");
-        streetLampImage = loadImage("Shapes_and_Sprites/trans_streetlamp.png");
+        streetLampImage = loadImage("Shapes_and_Sprites/lamp.png");
         dudeImage = loadImage("Shapes_and_Sprites/dude.png");
 
         // The dude sprites[3]
@@ -405,10 +406,11 @@ public class longWalkHomeApplet extends Visual {
         background(100 + getAudioPlayer().position() / 1000, 150 - getAudioPlayer().position() / 2000,
                 220 - getAudioPlayer().position() / 1000);
 
-        // Create new fireballs at the top of the screen
-        if (random(1) < 0.05) {
-            fireballs.add(new Fireball());
-        }
+        the_meteor.draw_meteor(1.2f);
+
+        // Liams waveform
+        Draw_Waveform((int) (height), 800);
+
 
         // Move and draw the fireballs
         for (int i = fireballs.size() - 1; i >= 0; i--) {
@@ -421,39 +423,66 @@ public class longWalkHomeApplet extends Visual {
             }
         }
 
-        the_meteor.draw_meteor(1.2f);
-
-        // Liams waveform
-        Draw_Waveform((int) (height), 800);
-
         // background town image
         if (getAudioPlayer().position() <= 5000) {
             // for first 5,000 miliseconds show JUST the nice street
             BackgroundRiotRepeat.repeat(riotBackgroundImage, 2, false, false);
             BackgroundNiceRepeat.repeat(niceBackgroundImage, 2, false, true);
         } else if (getAudioPlayer().position() <= 40000) {
+
+            // Create new fireballs at the top of the screen
+            if (random(1) < 0.05) {
+                fireballs.add(new Fireball());
+            }
+            
             // start to switch to rioted street after 40,000 miliseconds (40 seconds)
             BackgroundRiotRepeat.repeat(riotBackgroundImage, 2, false, true);
             BackgroundNiceRepeat.repeat(niceBackgroundImage, 2, true, true);
         } else {
+            // Create new fireballs at the top of the screen
+            if (random(1) < 0.09) {
+                fireballs.add(new Fireball());
+            }
             // turn off nice street all together after 40 seconds
             BackgroundRiotRepeat.repeat(riotBackgroundImage, 2, false, true);
             BackgroundNiceRepeat.repeat(niceBackgroundImage, 2, true, false);
 
         }
 
+        
         // Draw ground
         calculateAverageAmplitude();
         fill(100 + getAmplitude() * 200); // Light gray + beat;
         rect(0, WINDOW_HEIGHT - GROUND_HEIGHT, WINDOW_WIDTH, GROUND_HEIGHT);
 
-        // Street lamp
+        // Street lamp  
         streetLampRepeat.repeat(streetLampImage, 5, false, true);
 
         // Draw dude
         the_dude.draw_dude();
+        
+        //prevent integer underflow
+        if( !(start_song_offset < -10) )
+        {
+            start_song_offset -= 1;
+        }
 
-        print("\rFPS: " + frameRate + "\t\tSong position (ms): " + getAudioPlayer().position());
+        fill(0,0,0, start_song_offset);
+        rect(0,0,WINDOW_WIDTH, WINDOW_HEIGHT);
+        
+        if (start_song == true && start_song_offset <= 175)
+        {
+            println("\nPLAYING SONG NOW");
+            getAudioPlayer().cue(0);
+            getAudioPlayer().play();
+
+            start_song = false;
+        }
+
+
+        print("\rFPS: " + frameRate + "\t\tSong position (ms): " + getAudioPlayer().position() + "\t\tStart offset: " + start_song_offset);
+
+
     }
 
     // Oisins work
