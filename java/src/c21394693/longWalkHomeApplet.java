@@ -1,6 +1,6 @@
 package c21394693;
 
-
+import java.util.ArrayList;
 
 import ie.tudublin.Visual;
 import processing.core.*;
@@ -14,10 +14,18 @@ import ie.tudublin.VisualException;
 
 public class longWalkHomeApplet extends Visual {
 
-    private static final int WINDOW_WIDTH   = 1200; // Width of game window
-    private static final int WINDOW_HEIGHT  = 600;  // Height of game window
-    private static final int GROUND_HEIGHT  = 50;   // Height of the ground
-   
+    private static final int FIREBALL_RADIUS = 15;
+    private static final int FIREBALL_SPEED = 10;
+    private static final int SMOOTH_TRANSITION_TIME = 3000;
+    private int FIREBALL_COLOR;
+
+    private int currentColor;
+    private int nextColor;
+    private int transitionStartTime;
+    private ArrayList<Fireball> fireballs;
+    private static final int WINDOW_WIDTH = 1200; // Width of game window
+    private static final int WINDOW_HEIGHT = 600; // Height of game window
+    private static final int GROUND_HEIGHT = 50; // Height of the ground
 
     /* - - - Images and repeat-sprites - - - */
     PImage niceBackgroundImage;
@@ -30,17 +38,14 @@ public class longWalkHomeApplet extends Visual {
     Repeatable_sprite BackgroundRiotRepeat = new Repeatable_sprite(0, 0, 0, 1f);
     /* - - - - - - - - - - - - - - - - - - - */
 
+    Dude the_dude = new Dude((WINDOW_HEIGHT - GROUND_HEIGHT - 120), // Y-Axis
+            2, // Animation-rate
+            150, 150); // Dude width, height
 
-    Dude the_dude = new Dude( (WINDOW_HEIGHT - GROUND_HEIGHT - 120), // Y-Axis
-                                2,          // Animation-rate
-                                150, 150);  // Dude width, height
-
-
-    Meteor the_meteor = new Meteor(200, 100,    // X, Y position
-            10, 10, 80, 8, 5, 40, 15,         // parametres for the waveform bands
-            -10, 50, 10,    // tilt amount (degrees), particle spawn rate, particle max speed
-            6, 150, 150);   // frame rate, image width and height
-
+    Meteor the_meteor = new Meteor(200, 100, // X, Y position
+            10, 10, 80, 8, 5, 40, 15, // parametres for the waveform bands
+            -10, 50, 10, // tilt amount (degrees), particle spawn rate, particle max speed
+            6, 150, 150); // frame rate, image width and height
 
     public void settings() {
         size(WINDOW_WIDTH, WINDOW_HEIGHT, P2D);
@@ -76,6 +81,11 @@ public class longWalkHomeApplet extends Visual {
         the_meteor.sprite_sheet_fly[2] = loadImage("Shapes_and_Sprites/meteorLayers/l2_sprite_1.png");
         the_meteor.sprite_sheet_fly[3] = loadImage("Shapes_and_Sprites/meteorLayers/l3_sprite_1.png");
         /* - - - - - - - - - - - - - */
+
+        fireballs = new ArrayList<>();
+        noStroke();
+        ellipseMode(RADIUS);
+        FIREBALL_COLOR = color(255, 165, 0);
 
         println("Starting drawing now!");
     }
@@ -364,8 +374,8 @@ public class longWalkHomeApplet extends Visual {
 
         // Calculate the step size for the x-axis, +0.02 so that it reaches the end of
         // the screen
-        int xStep = (int)(width / (float)getSmoothedBands().length);
-        
+        int xStep = (int) (width / (float) getSmoothedBands().length);
+
         // Draw the waveform as a series of connected points
         beginShape();
 
@@ -373,17 +383,16 @@ public class longWalkHomeApplet extends Visual {
         // i += 8 = 128 vertex's to sample (1-2 fps loss)
         rectMode(CENTER);
 
-        for (int i = 0; i < getSmoothedBands().length; i++) 
-        {
+        for (int i = 0; i < getSmoothedBands().length; i++) {
             fill(255, 100, 100, 255);
-            int x = i * xStep + (xStep/2);
-            int y = (int)(getSmoothedBands()[i] * 5);
-            
-            
-            rect(x, Y_Position, xStep, constrain(y, 100, max_height), 50 );
+            int x = i * xStep + (xStep / 2);
+            int y = (int) (getSmoothedBands()[i] * 5);
+
+            rect(x, Y_Position, xStep, constrain(y, 100, max_height), 50);
         }
         rectMode(CORNER);
         endShape();
+        noStroke();
     }
 
     /* Oisin background */
@@ -393,22 +402,40 @@ public class longWalkHomeApplet extends Visual {
 
     public void draw() {
 
-        //Analyse Audio
+        // Analyse Audio
         calculateAverageAmplitude();
-        try { calculateFFT(); }
-        catch(VisualException e)    { e.printStackTrace(); }
+        try {
+            calculateFFT();
+        } catch (VisualException e) {
+            e.printStackTrace();
+        }
         calculateFrequencyBands();
-        
 
         // Sky gradually turns more red
         background(100 + getAudioPlayer().position() / 1000, 150 - getAudioPlayer().position() / 2000,
                 220 - getAudioPlayer().position() / 1000);
-       
 
+        // Create new fireballs at the top of the screen
+        if (random(1) < 0.05) {
+            fireballs.add(new Fireball());
+        }
+
+        // Move and draw the fireballs
+        for (int i = fireballs.size() - 1; i >= 0; i--) {
+            Fireball fireball = fireballs.get(i);
+            fireball.move();
+            fireball.init();
+            // Remove the fireball if it goes off the bottom of the screen
+            if (fireball.y > WINDOW_HEIGHT) {
+                fireballs.remove(i);
+            }
+        }
+
+       
         the_meteor.draw_meteor(1.2f);
 
         // Liams waveform
-        Draw_Waveform((int)(height), 800);
+        Draw_Waveform((int) (height), 800);
 
         // background town image
         if (getAudioPlayer().position() <= 5000) {
@@ -431,6 +458,7 @@ public class longWalkHomeApplet extends Visual {
         fill(100 + getAmplitude() * 200); // Light gray + beat;
         rect(0, WINDOW_HEIGHT - GROUND_HEIGHT, WINDOW_WIDTH, GROUND_HEIGHT);
 
+
         // Street lamp
         streetLampRepeat.repeat(streetLampImage, 5, false, true);
 
@@ -438,5 +466,32 @@ public class longWalkHomeApplet extends Visual {
         the_dude.draw_dude();
 
         print("\rFPS: " + frameRate + "\t\tSong position (ms): " + getAudioPlayer().position());
+    }
+
+    private class Fireball {
+        float x, y;
+        float speedX, speedY;
+        int color;
+
+        public Fireball() {
+            x = random(WINDOW_WIDTH);
+            y = -FIREBALL_RADIUS;
+            speedX = random(-2, 2);
+            speedY = FIREBALL_SPEED;
+            color = FIREBALL_COLOR;
+        }
+
+        public void move() {
+            x += speedX;
+            y += speedY;
+        }
+
+        public void init() {
+
+            fill(color);
+            ellipse(x, y, FIREBALL_RADIUS, FIREBALL_RADIUS);
+        }
+
+        
     }
 }
