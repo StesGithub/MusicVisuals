@@ -392,7 +392,7 @@ public class longWalkHomeApplet extends Visual {
         private int starting_Y;
         public int sprite_index = 0;
 
-
+        
 
         public Curtain(int starting_y_pos, int animation_rate, int curtain_width, int curtain_height) {
             starting_Y = starting_y_pos;
@@ -401,16 +401,17 @@ public class longWalkHomeApplet extends Visual {
             curtainHeight = curtain_height;
         }
         public void draw_curtains() {
-            // Have enough miliseconds passsed
-            if (black_screen_alpha != 0){
+            if (millis() % 2000 < 50) {
                 sprite_index++;
-                // Loop back to 0 if needed
-                if (sprite_index >= 6) {
-                    sprite_index = 0;
-                }
             }
-
-            image(sprite_sheet_curtain[sprite_index], X, starting_Y, curtainWidth, curtainHeight);
+            if (getAudioPlayer().length() - getAudioPlayer().position() <= 5000 && millis() % 2000 < 50){
+                sprite_index--;
+            }
+            if(sprite_index <=5 && sprite_index < 0){
+                image(sprite_sheet_curtain[sprite_index], X, starting_Y, curtainWidth, curtainHeight);
+                
+            }
+            
         }
 
 
@@ -548,7 +549,10 @@ public class longWalkHomeApplet extends Visual {
             start_song = false;
         }
 
-        //curtains.draw_curtains();
+        curtains.draw_curtains();
+        
+        
+        
         // start fade out 10 seconds before the end
         if (getAudioPlayer().length() - getAudioPlayer().position() <= 10000) {
             if (black_screen_alpha < -1) {
