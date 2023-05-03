@@ -173,7 +173,7 @@ for (int i = 1; i <= bands_to_do; i++) {
 
         }
 
-```
+
     }
 ```
 
@@ -256,14 +256,7 @@ The Sprite images for our animations:
 
 This is a youtube video:
 
-[![YouTube](http://img.youtube.com/vi/J2kHSSFA4NU/0.jpg)](https://www.youtube.com/watch?v=J2kHSSFA4NU)
+[![YouTube](images/thumbnail.webp)](https://youtu.be/WxJYc-XamIE)
 
-This is a table:
 
-| Heading 1 | Heading 2 |
-|-----------|-----------|
-|Some stuff | Some more stuff in this column |
-|Some stuff | Some more stuff in this column |
-|Some stuff | Some more stuff in this column |
-|Some stuff | Some more stuff in this column |
 
