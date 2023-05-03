@@ -1,21 +1,25 @@
 # Music Visualiser Project
 
-Name:
+## Group Members
+| Student Number | Student Name |
+|-----------|-----------|
+|C21415142 | César Hannin |
+|C21447352 | Liam Tuite |
+|C21501436 | Oisin Keily |
+|C21394693 | Stephen Thompson |
+ 
 
-Student Number: 
+## Description
+This audio visualisation of Skeeter Davises' (1962) "The End of the World" follows the story of a lone individual walking down the endless street as there is a meteor in the sky. As he walks down the street, we can see how his town and suffered more damage from people panicking than the meteor itself. The background changes slowly as the song progresses, while the city skyscrapers in the background red in fire, as well as the trail behind the meteor, reacting to the amplitude of the song.
 
-## Instructions
-- Fork this repository and use it a starter project for your assignment
-- Create a new package named your student number and put all your code in this package.
-- You should start by creating a subclass of ie.tudublin.Visual
-- There is an example visualiser called MyVisual in the example package
-- Check out the WaveForm and AudioBandsVisual for examples of how to call the Processing functions from other classes that are not subclasses of PApplet
+## Quickstart Guide
+- Navigate to the **java/** folder
+- Run **Compile_and_Run.bat** (or **Compile_and_Run.sh** if using a UNIX system)
+- Enjoy
+- Feel free to run the other **.bat** scripts, as these were visuals which were later incorporated themselves into the main visual
 
-# Description of the assignment
-
-# Instructions
-
-# How it works
+## How it works
+1. We initialised all of the variables and objects to be used throughout the project
 
 # What I am most proud of in the assignment
 
