@@ -54,7 +54,7 @@ private static float[] smooth_bands;
 # Markdown Tutorial
 
 The Sprite images for our animations:
-	[sprite1](images/dude1.PNG)
+	![sprite1](images/dude1.PNG)
 
 
 
