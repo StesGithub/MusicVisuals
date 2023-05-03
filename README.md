@@ -36,7 +36,9 @@ private static float[] smooth_bands;
 ```
 
 ### César - How the Meteor class works
-	- The Meteor class first starts by being initiallised with an admititadly large constructor, with 16 required parametres, however, due to the use of **pushmatrix()** and **popmatrix()** the meteor class and object had to be retained within the PApplet, otherwise compilation and runtime errors would occur. The whole constructor is as shown:
+	
+The Meteor class first starts by being initiallised with an admititadly large constructor, with 16 required parametres, however, due to the use of **pushmatrix()** and **popmatrix()** the meteor class and object had to be retained within the PApplet, otherwise compilation and runtime errors would occur. The whole constructor is as shown:
+
 ```Java
 	public Meteor(int met_origin_x, int met_origin_y, int band_initial_gap_x, int band_initial_gap_y,
                 int band_height, int band_width, int band_sensitivity, int met_bands_to_do,
