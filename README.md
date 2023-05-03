@@ -60,7 +60,8 @@ private static float[] smooth_bands;
         rectMode(CORNER);
         noStroke();
     }
-    
+```
+
 The waveform takes two integer parameters `Y_Position` and `max_height`. This method is responsible for drawing a waveform on the screen using rectangles. 
 
 Firstly, the stroke color is set to red (255, 0, 0) and the stroke weight is set to 10. The `stroke` function sets the color and `strokeWeight` function sets the thickness of the outline of the rectangles.
