@@ -76,14 +76,14 @@ The Meteor class first starts by being initiallised with an admititadly large co
         }
 ```
 
-	- The meteor consists of 3 main parts, these are:
-		1. The miniature waveform behind everything
-		2. The meteor flipbook
-		3. The Particle system
+The meteor consists of 3 main parts, these are:
+1. The miniature waveform behind everything
+2. The meteor flipbook
+3. The Particle system
 
-	In the code shown above, the meteor is given an X and Y position to start drawing everything from. Waveforms will be made in each of the 4 corners, with a custom X and Y gap, and each waveform band's width and max height can be passed here, aswell as the other parametres.
+In the code shown above, the meteor is given an X and Y position to start drawing everything from. Waveforms will be made in each of the 4 corners, with a custom X and Y gap, and each waveform band's width and max height can be passed here, aswell as the other parametres.
 
-	- We start by pushing a new matrix. This allows us to do rotations and translations without affecting the rest of the scene. We preform a minor rotation of the new origion. We then make one part of the total waveform in each corner, with the appropiate initial gap. Here is an example of one corner:
+We start by pushing a new matrix. This allows us to do rotations and translations without affecting the rest of the scene. We preform a minor rotation of the new origion. We then make one part of the total waveform in each corner, with the appropiate initial gap. Here is an example of one corner:
 ```Java 
 /* - - - top left of mini waveform - - - */
 // set band_amp to a band value from the lowest quartile of smoothed bands
@@ -100,13 +100,13 @@ for (int i = 1; i <= bands_to_do; i++) {
 	}
 ```
 
-	- We then rotate back to normal and draw our particles. A for loop goes from 0 up to the max number of particles that we specified. Arrays for each particles position, transparency, and rotations exist and we make miniture elipses based on these array values at whatever index we're currently on. 
+- We then rotate back to normal and draw our particles. A for loop goes from 0 up to the max number of particles that we specified. Arrays for each particles position, transparency, and rotations exist and we make miniture elipses based on these array values at whatever index we're currently on. 
 
-	- After each particle is drawn we then decrement the opacity a bit. If the tranparency is below 0, we then reset the particular particle's position and size.
+- After each particle is drawn we then decrement the opacity a bit. If the tranparency is below 0, we then reset the particular particle's position and size.
 
-	- After drawing the particles, we then draw our Meteor. We reset our matrix and transform as it would've been afected by the particles and their rotations.
+- After drawing the particles, we then draw our Meteor. We reset our matrix and transform as it would've been afected by the particles and their rotations.
 
-	- We see if we need to update our current sprite so that the animation rate remains consistent. The Meteor has a base size, which increases as the song progresses 
+- We see if we need to update our current sprite so that the animation rate remains consistent. The Meteor has a base size, which increases as the song progresses 
 
 ### Stephen - How the sprites and animations work. 
 	- I designed all of the sprites myself so the art would be unique. I created seperate frames for the city, curtains and our protagonist. These images were fed into their own array lists that we could cycle through during the runtime of our project to create movment.
@@ -140,7 +140,7 @@ for (int i = 1; i <= bands_to_do; i++) {
         curtains.sprite_sheet_curtain[5] = loadImage("Shapes_and_Sprites/curtainLayers/l5_curtains1.png");
 
 ```
-	- For the curtains: The curtains have their own class and when called by the draw method will initialise all of our drawings as well as positional data we then slow down the animation by only allowing sprite_index to be incremented every two seconds rather than everytime the draw method class the function. This creates a less rushed animation. We then render the elements of the array list in order using sprite_index which creates an animation of opening and closing curtains.
+- For the curtains: The curtains have their own class and when called by the draw method will initialise all of our drawings as well as positional data we then slow down the animation by only allowing sprite_index to be incremented every two seconds rather than everytime the draw method class the function. This creates a less rushed animation. We then render the elements of the array list in order using sprite_index which creates an animation of opening and closing curtains.
 
 ```Java
   class Curtain {
@@ -179,7 +179,7 @@ for (int i = 1; i <= bands_to_do; i++) {
     }
 ```
 
-	- For the dude: We named our protagonist the dude to make it easy to decipher what variables we're working with and also the name felt fitting. For his animation he also has his own class in which their are nested if statements to check if enough time has passed to move to the next frame and another if statemnt to check if our sprite_index is about to go out of bounds and then resetting it to 0 so the animation can conintue for the duration of our song and give the illusion of him walking through the city.
+- For the dude: We named our protagonist the dude to make it easy to decipher what variables we're working with and also the name felt fitting. For his animation he also has his own class in which their are nested if statements to check if enough time has passed to move to the next frame and another if statemnt to check if our sprite_index is about to go out of bounds and then resetting it to 0 so the animation can conintue for the duration of our song and give the illusion of him walking through the city.
 
 ```Java
     class Dude {
@@ -219,8 +219,8 @@ for (int i = 1; i <= bands_to_do; i++) {
         }
     }
 ```
-	- For the city: The city has two different versions that seemlessly blend into eahcother during the runtime of the song, to give the illusion of it gradually being destroyed as our meteor gets closer and citizens start to panic. Within our draw method there are if statements that handle these changes, so within the first 5 seconds there's only a nice clean city and then after those five seconds our two city get melded together to create the illusion of the destruction beginning and after 40 seconds the nice city is removed from the rotation leaving only the destroyed city graphic. The city is given the illusion of going on forever by using our repeatable sprite class. This is done by passing our reference images and calling the repeat function which takes our parameters and calculates the number of sprites required to fill the screen, the method then loops through the required number of sprites and draws them at an appropriate x position to fill the screen. The method then updates the starting x position to simulate scrolling.
-	- For the StreetLamps: Our street lamps use the same class as our city images to simulate movement so that when the lamp is not visible we get another one drawn in to simulate movement.
+- For the city: The city has two different versions that seemlessly blend into eahcother during the runtime of the song, to give the illusion of it gradually being destroyed as our meteor gets closer and citizens start to panic. Within our draw method there are if statements that handle these changes, so within the first 5 seconds there's only a nice clean city and then after those five seconds our two city get melded together to create the illusion of the destruction beginning and after 40 seconds the nice city is removed from the rotation leaving only the destroyed city graphic. The city is given the illusion of going on forever by using our repeatable sprite class. This is done by passing our reference images and calling the repeat function which takes our parameters and calculates the number of sprites required to fill the screen, the method then loops through the required number of sprites and draws them at an appropriate x position to fill the screen. The method then updates the starting x position to simulate scrolling.
+- For the StreetLamps: Our street lamps use the same class as our city images to simulate movement so that when the lamp is not visible we get another one drawn in to simulate movement.
 
 
 ### César - How the Repeating sprite class works
