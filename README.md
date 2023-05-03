@@ -109,7 +109,7 @@ for (int i = 1; i <= bands_to_do; i++) {
 - We see if we need to update our current sprite so that the animation rate remains consistent. The Meteor has a base size, which increases as the song progresses 
 
 ### Stephen - How the sprites and animations work. 
-	- I designed all of the sprites myself so the art would be unique. I created seperate frames for the city, curtains and our protagonist. These images were fed into their own array lists that we could cycle through during the runtime of our project to create movment.
+- I designed all of the sprites myself so the art would be unique. I created seperate frames for the city, curtains and our protagonist. These images were fed into their own array lists that we could cycle through during the runtime of our project to create movment.
 
 ```Java
 
@@ -239,22 +239,22 @@ When a sprite has scrolled offscreen, if we want it to repeat, it will reset the
 # The Sprites
 
 The Sprite images for our animations:
- - [Dude 1](images/dude1.PNG)
- - [Dude 2](images/dude2.PNG)
- - [Dude 3](images/dude3.PNG)
- - [City 1](images/streetNoSky.png)
- - [City 2](images/darkerStreet.png)
- - [Lamp](images/lamp.PNG) 
- - [Curtains 1](images/curtains1.PNG)
- - [Curtains 2](images/curtains2.PNG)
- - [Meteor 1](images/meteor1.PNG)
- - [Meteor 2](images/meteor2.PNG)
-
+[[Dude 1](images/dude1.PNG)]
+[[Dude 2](images/dude2.PNG)]
+[[Dude 3](images/dude3.PNG)]
+[[City 1](images/streetNoSky.png)]
+[[City 2](images/darkerStreet.png)]
+[[Lamp ](images/lamp.PNG)]
+[[Curtains 1](images/curtains1.PNG)]
+[[Curtains 2](images/curtains2.PNG)]
+[[Meteor 1](images/meteor1.PNG)]
+[[Meteor 2](images/meteor2.PNG)]
 
 # Screenshots of the visuals' execution
-[Start](images/Start_1.png)
-[Finished Fade in](images/Start_2.png)
-[Background Change](images/Ruined_background.png)
+
+[![Start ](images/Start_1.png)]
+[![Finished Fade in](images/Start_2.png)]
+[![Background Change](images/Ruined_background.png)]
 
 This is a youtube video:
 
