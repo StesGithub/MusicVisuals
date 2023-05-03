@@ -140,7 +140,7 @@ for (int i = 1; i <= bands_to_do; i++) {
         curtains.sprite_sheet_curtain[5] = loadImage("Shapes_and_Sprites/curtainLayers/l5_curtains1.png");
 
 ```
-- For the curtains: The curtains have their own class and when called by the draw method will initialise all of our drawings as well as positional data we then slow down the animation by only allowing sprite_index to be incremented every two seconds rather than everytime the draw method class the function. This creates a less rushed animation. We then render the elements of the array list in order using sprite_index which creates an animation of opening and closing curtains.
+- For the curtains: The curtains have their own class and when called by the draw method will initialise all of our drawings as well as positional data we then slow down the animation by only allowing sprite_index to be incremented every two seconds rather than everytime the draw method calls the draw_curatins method. This creates a less rushed animation. We then render the elements of the array list in order using sprite_index which creates an animation of opening and closing curtains.
 
 ```Java
   class Curtain {
