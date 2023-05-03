@@ -20,8 +20,28 @@ This audio visualisation of Skeeter Davises' (1962) "The End of the World" follo
 
 ## How it works
 1. We initialised all of the variables and objects to be used throughout the project
+```Java
+private static final int FIREBALL_RADIUS = 15;
+private static final int FIREBALL_SPEED = 10;
+private float black_screen_alpha = WINDOW_HEIGHT;
+private boolean start_song = true;
+private boolean end_song = false;
+private PFont font;
+
+private ArrayList<Fireball> fireballs;
+private static final int WINDOW_WIDTH = 1200; // Width of game window
+private static final int WINDOW_HEIGHT = 600; // Height of game window
+private static final int GROUND_HEIGHT = 50; // Height of the ground
+private static float[] smooth_bands;
+```
+
+2. César - Here's how the meteor works and stuff
+
+
+
 
 # What I am most proud of in the assignment
+1. César - blah blah blah
 
 # Markdown Tutorial
 
