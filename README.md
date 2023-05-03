@@ -34,44 +34,6 @@ private static final int WINDOW_HEIGHT = 600; // Height of game window
 private static final int GROUND_HEIGHT = 50; // Height of the ground
 private static float[] smooth_bands;
 ```
-## Liam - how the waveform works
-The waveform takes two integer, parameters Y_Position and max_height. This method is responsible for drawing a waveform on the screen using rectangles.
-
-Firstly, I set the stroke color to red (255, 0, 0) and the stroke weight is set to 10. The stroke function sets the color and strokeWeight function sets the thickness of the outline of the rectangles, originally I went with a regular waveform which probably looked a bit too janky and did not suit the style we were going for.
-
-The next step involves calculating the step size for the x-axis of the waveform. width is the width of the canvas, and smooth_bands is an array of values that represent the amplitudes of the waveform, I think this caused some problems originally and was affecting the fps when we ran the programme. The length of the smooth_bands array is used to determine the number of rectangles to draw and calculate the width of each rectangle. The value of width is divided by the length of the smooth_bands array to obtain the width of each rectangle.
-
-After that, a loop is used to draw the rectangles. Each rectangle is drawn by first setting its color using the fill function with an RGBA value of (255, 100, 100, 255). The rect function is then called with five parameters, which are the x and y coordinates of the rectangle, the width and height of the rectangle, and the corner radius. The x position of the rectangle is calculated using the current iteration of the loop multiplied by the xStep value, which is the width of each rectangle. The y position of the rectangle is calculated using the current value of smooth_bands[i] multiplied by 5 to scale it to a suitable size.
-
-The constrain function is used to limit the height of the rectangle to be within the range of 100 to max_height. The last parameter of the rect function is the corner radius of the rectangle, which is set to 50 in this case.
-
-At the end of the loop, rectMode is set to CORNER to ensure that subsequent drawing operations use the default rectangle mode, and noStroke is called to remove the outline of the rectangles.
-```Java
-/* Liam's Waveform visual */
-public void Draw_Waveform(int Y_Position, int max_height) {
-    // Set the stroke color to red and stroke weight to 2
-    stroke(255, 0, 0);
-    strokeWeight(10);
-
-    // Calculate the step size for the x-axis, +0.02 so that it reaches the end of
-    // the screen
-    int xStep = (int) (width / (float) smooth_bands.length);
-
-    // i += 1 = 1024 vertex's to sample (90+% performance loss)
-    // i += 8 = 128 vertex's to sample (1-2 fps loss)
-    rectMode(CENTER);
-
-    for (int i = 0; i < smooth_bands.length; i++) {
-        fill(255, 100, 100, 255);
-        int x = i * xStep + (xStep / 2);
-        int y = (int) (smooth_bands[i] * 5);
-
-        rect(x, Y_Position, xStep, constrain(y, 100, max_height), 50);
-    }
-    rectMode(CORNER);
-    noStroke();
-}
-
 
 ### César - How the Meteor class works
 	
@@ -268,6 +230,39 @@ The aim of the repeating sprite is to achieve a scrolling effect on a sprite wit
 a for loop will analyse the width of the sprite, the gap inbetween, and figure out how many sprites are need for seamless scrolling. There is a starting X point where the first image gets drawn. It then goes the width of the image, as well as the gap, and then draws the next. It does this untill we've drawn enough sprites as calculated from before.
 
 When a sprite has scrolled offscreen, if we want it to repeat, it will reset the starting X position to that of the next sprite, AFTER it's already moved, keeping the motion and illusion alive
+
+### Oisín - How the fireballs work: 
+
+Throughout the programme there are fire balls falling from the sky. These are meant to be rocks that have broken off of the meteor and that are crashing down and wreaking havoc on the world. The code for the fireball class is as follows:
+
+```Java
+	private class Fireball {
+        float x, y;
+        float speedX, speedY;
+        int extra; // get bigger as the song goes on
+
+        public Fireball() {
+            x = random(WINDOW_WIDTH);
+            y = -FIREBALL_RADIUS;
+            speedX = random(-2, 2);
+            speedY = FIREBALL_SPEED;
+        }
+
+        public void move() {
+            x += speedX;
+            y += speedY;
+        }
+
+        public void init() {
+
+            extra = getAudioPlayer().position() / 8000;
+            ellipse(x, y, FIREBALL_RADIUS + extra, FIREBALL_RADIUS + extra);
+        }
+
+    }
+```
+
+The above class creates each fire ball. The variable "int extra" is in charge of making the fireball grow as the song goes on. This is great as the meteor grows as the song goes on as well as the fireballs. This gives a sense of impending doom as the destruction creeps closer towards the screen. The fireballs fall from random locations at the top of the window, therefore the fireballs will technically fall in a different way everytime that the programme is ran. This adds some replayability to the programme. 
 
 
 # What I am most proud of in the assignment
