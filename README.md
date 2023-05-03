@@ -109,6 +109,31 @@ for (int i = 1; i <= bands_to_do; i++) {
 ### Stephen - How the sprites and animations work. 
 	- I designed all of the sprites myself so the art would be unique. I created seperate frames for the city, curtains and our protagonist. These images were fed into their own array lists that we could cycle through during the runtime of our project to create movment.
 	- For the curtains: The curtains have their own class and when called by the draw method will initialise all of our drawings as well as positional data we then slow down the animation by only allowing sprite_index to be incremented every two seconds rather than everytime the draw method class the function. This creates a less rushed animation. We then render the elements of the array list in order using sprite_index which creates an animation of opening and closing curtains.
+	```Java
+
+    /* - - - Images and repeat-sprites - - - */
+    PImage niceBackgroundImage;
+    PImage riotBackgroundImage;
+    PImage dudeImage;
+    PImage streetLampImage;
+    Repeatable_sprite streetLampRepeat = new Repeatable_sprite(0, 380, 500, 3.5f); // start at X: 0, Y: 369, Gap size:
+                                                                                   // 500, Scale: 0.5
+    Repeatable_sprite BackgroundNiceRepeat = new Repeatable_sprite(0, 0, 0, 1f);
+    Repeatable_sprite BackgroundRiotRepeat = new Repeatable_sprite(0, 0, 0, 1f);
+    /* - - - - - - - - - - - - - - - - - - - */
+
+    Dude the_dude = new Dude((WINDOW_HEIGHT - GROUND_HEIGHT - 120), // Y-Axis
+            2, // Animation-rate
+            150, 150); // Dude width, height
+
+    Meteor the_meteor = new Meteor(200, 100, // X, Y position
+            10, 10, 80, 8, 5, 30, 5, // parametres for the waveform bands
+            -10, 50, 10, // tilt amount (degrees), particle spawn rate, particle max speed
+            6, 150, 150); // frame rate, image width and height
+
+    Curtain curtains = new Curtain(0, 2, WINDOW_WIDTH, WINDOW_HEIGHT);
+
+	```
 	- For the dude: We named our protagonist the dude to make it easy to decipher what variables we're working with and also the name felt fitting. For his animation he also has his own class in which their are nested if statements to check if enough time has passed to move to the next frame and another if statemnt to check if our sprite_index is about to go out of bounds and then resetting it to 0 so the animation can conintue for the duration of our song and give the illusion of him walking through the city.
 	- For the city: The city has two different versions that seemlessly blend into eahcother during the runtime of the song, to give the illusion of it gradually being destroyed as our meteor gets closer and citizens start to panic. Within our draw method there are if statements that handle these changes, so within the first 5 seconds there's only a nice clean city and then after those five seconds our two city get melded together to create the illusion of the destruction beginning and after 40 seconds the nice city is removed from the rotation leaving only the destroyed city graphic. The city is given the illusion of going on forever by using our repeatable sprite class. This is done by passing our reference images and calling the repeat function which takes our parameters and calculates the number of sprites required to fill the screen, the method then loops through the required number of sprites and draws them at an appropriate x position to fill the screen. The method then updates the starting x position to simulate scrolling.
 	- For the StreetLamps: Our street lamps use the same class as our city images to simulate movement so that when the lamp is not visible we get another one drawn in to simulate movement.
@@ -133,7 +158,7 @@ The Sprite images for our animations:
  - [Dude 2](images/dude2.PNG)
  - [Dude 3](images/dude3.PNG)
  - [City 1](images/streetNoSky.png)
- - [City 2](images/dude1.png)
+ - [City 2](images/darkerStreet.png)
  - [Lamp](images/lamp.PNG) 
  - [Curtains 1](images/curtains1.PNG)
  - [Curtains 2](images/curtains2.PNG)
