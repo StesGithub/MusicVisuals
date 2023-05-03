@@ -62,6 +62,9 @@ public class longWalkHomeApplet extends Visual {
         textFont(font, 42);
         textAlign(CENTER, TOP);
 
+        surface.setTitle("The End of the World");
+        surface.setResizable(false);
+
         frameRate(40); // 40 allows for minor frame rate dips to 30
 
         /* - - - Setup the Audio - - - */
