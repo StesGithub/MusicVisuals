@@ -493,7 +493,7 @@ public class longWalkHomeApplet extends Visual {
             BackgroundRiotRepeat.repeat(riotBackgroundImage, 2, false, true);
             BackgroundNiceRepeat.repeat(niceBackgroundImage, 2, true, true);
         } else {
-            // Create new fireballs at the top of the screen
+            // Create more fireballs
             if (random(1) < 0.12) {
                 fireballs.add(new Fireball());
             }
