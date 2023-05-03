@@ -126,7 +126,7 @@ When a sprite has scrolled offscreen, if we want it to repeat, it will reset the
 1. César - I'm particularly proud of the ellagance of the repeating image class. In very few lines of code, we achieve a scolling image affect which is perfect in its look. The checks for visability also allows us to have new images to be repeated instead, this allows us to seamlessly have different backgrounds scoll in.
 2. Stephen - I am most proud of the assets I designed and how seamlessly everything came togehter. All of the assets and animations compliment eachother and the whole experience feels cohesive and I think all of our collaboration does a great job of telling the story of the song.
 
-# Markdown Tutorial
+# The Sprites
 
 The Sprite images for our animations:
  - [Dude 1](images/dude1.PNG)
@@ -141,61 +141,9 @@ The Sprite images for our animations:
  - [Meteor 2](images/meteor2.PNG)
 
 
+# Screenshots of the visual
 
 
-
-This is *emphasis*
-
-This is a bulleted list
-
-- Item
-- Item
-
-This is a numbered list
-
-1. Item
-1. Item
-
-This is a [hyperlink](http://bryanduggan.org)
-
-# Headings
-## Headings
-#### Headings
-##### Headings
-
-This is code:
-
-```Java
-public void render()
-{
-	ui.noFill();
-	ui.stroke(255);
-	ui.rect(x, y, width, height);
-	ui.textAlign(PApplet.CENTER, PApplet.CENTER);
-	ui.text(text, x + width * 0.5f, y + height * 0.5f);
-}
-```
-
-So is this without specifying the language:
-
-```
-public void render()
-{
-	ui.noFill();
-	ui.stroke(255);
-	ui.rect(x, y, width, height);
-	ui.textAlign(PApplet.CENTER, PApplet.CENTER);
-	ui.text(text, x + width * 0.5f, y + height * 0.5f);
-}
-```
-
-This is an image using a relative URL:
-
-![An image](images/p8.png)
-
-This is an image using an absolute URL:
-
-![A different image](https://bryanduggandotorg.files.wordpress.com/2019/02/infinite-forms-00045.png?w=595&h=&zoom=2)
 
 This is a youtube video:
 
