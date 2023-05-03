@@ -34,7 +34,45 @@ private static final int WINDOW_HEIGHT = 600; // Height of game window
 private static final int GROUND_HEIGHT = 50; // Height of the ground
 private static float[] smooth_bands;
 ```
+## Liam - How the waveform works
 
+The waveform takes two integer, parameters Y_Position and max_height. This method is responsible for drawing a waveform on the screen using rectangles.
+
+Firstly, I set the stroke color to red (255, 0, 0) and the stroke weight is set to 10. The stroke function sets the color and strokeWeight function sets the thickness of the outline of the rectangles, originally I went with a regular waveform which probably looked a bit too janky and did not suit the style we were going for.
+
+The next step involves calculating the step size for the x-axis of the waveform. width is the width of the canvas, and smooth_bands is an array of values that represent the amplitudes of the waveform, I think this caused some problems originally and was affecting the fps when we ran the programme. The length of the smooth_bands array is used to determine the number of rectangles to draw and calculate the width of each rectangle. The value of width is divided by the length of the smooth_bands array to obtain the width of each rectangle.
+
+After that, a loop is used to draw the rectangles. Each rectangle is drawn by first setting its color using the fill function with an RGBA value of (255, 100, 100, 255). The rect function is then called with five parameters, which are the x and y coordinates of the rectangle, the width and height of the rectangle, and the corner radius. The x position of the rectangle is calculated using the current iteration of the loop multiplied by the xStep value, which is the width of each rectangle. The y position of the rectangle is calculated using the current value of smooth_bands[i] multiplied by 5 to scale it to a suitable size.
+
+The constrain function is used to limit the height of the rectangle to be within the range of 100 to max_height. The last parameter of the rect function is the corner radius of the rectangle, which is set to 50 in this case.
+
+At the end of the loop, rectMode is set to CORNER to ensure that subsequent drawing operations use the default rectangle mode, and noStroke is called to remove the outline of the rectangles.
+
+    /* Liam's Waveform visual */
+    public void Draw_Waveform(int Y_Position, int max_height) {
+        // Set the stroke color to red and stroke weight to 2
+        stroke(255, 0, 0);
+        strokeWeight(10);
+
+        // Calculate the step size for the x-axis, +0.02 so that it reaches the end of
+        // the screen
+        int xStep = (int) (width / (float) smooth_bands.length);
+
+        // i += 1 = 1024 vertex's to sample (90+% performance loss)
+        // i += 8 = 128 vertex's to sample (1-2 fps loss)
+        rectMode(CENTER);
+
+        for (int i = 0; i < smooth_bands.length; i++) {
+            fill(255, 100, 100, 255);
+            int x = i * xStep + (xStep / 2);
+            int y = (int) (smooth_bands[i] * 5);
+
+            rect(x, Y_Position, xStep, constrain(y, 100, max_height), 50);
+        }
+        rectMode(CORNER);
+        noStroke();
+    }
+    
 ### César - How the Meteor class works
 	
 The Meteor class first starts by being initiallised with an admititadly large constructor, with 16 required parametres, however, due to the use of **pushmatrix()** and **popmatrix()** the meteor class and object had to be retained within the PApplet, otherwise compilation and runtime errors would occur. The whole constructor is as shown:
@@ -235,6 +273,7 @@ When a sprite has scrolled offscreen, if we want it to repeat, it will reset the
 # What I am most proud of in the assignment
 1. César - I'm particularly proud of the ellagance of the repeating image class. In very few lines of code, we achieve a scolling image affect which is perfect in its look. The checks for visability also allows us to have new images to be repeated instead, this allows us to seamlessly have different backgrounds scoll in.
 2. Stephen - I am most proud of the assets I designed and how seamlessly everything came togehter. All of the assets and animations compliment eachother and the whole experience feels cohesive and I think all of our collaboration does a great job of telling the story of the song.
+3. Liam - I am most proud of how the waveform's size and colour blends in beautifully with the pink sky, when watching it I like to think how you can find beauty in the worst of situations, as our project is telling the story of the world ending and as I watch it i get a sense of satisfaction seeing the blending of the background and the waveform.
 
 # The Sprites
 
