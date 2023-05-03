@@ -46,7 +46,7 @@ After that, a loop is used to draw the rectangles. Each rectangle is drawn by fi
 The constrain function is used to limit the height of the rectangle to be within the range of 100 to max_height. The last parameter of the rect function is the corner radius of the rectangle, which is set to 50 in this case.
 
 At the end of the loop, rectMode is set to CORNER to ensure that subsequent drawing operations use the default rectangle mode, and noStroke is called to remove the outline of the rectangles.
-
+```Java
 /* Liam's Waveform visual */
 public void Draw_Waveform(int Y_Position, int max_height) {
     // Set the stroke color to red and stroke weight to 2
