@@ -72,6 +72,7 @@ public void Draw_Waveform(int Y_Position, int max_height) {
     noStroke();
 }
 
+
 ### César - How the Meteor class works
 	
 The Meteor class first starts by being initiallised with an admititadly large constructor, with 16 required parametres, however, due to the use of **pushmatrix()** and **popmatrix()** the meteor class and object had to be retained within the PApplet, otherwise compilation and runtime errors would occur. The whole constructor is as shown:
