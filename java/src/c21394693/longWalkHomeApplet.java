@@ -88,8 +88,8 @@ public class longWalkHomeApplet extends Visual {
         the_meteor.sprite_sheet_fly[2] = loadImage("Shapes_and_Sprites/meteorLayers/l2_sprite_1.png");
         the_meteor.sprite_sheet_fly[3] = loadImage("Shapes_and_Sprites/meteorLayers/l3_sprite_1.png");
         /* - - - - - - - - - - - - - */
-        
-        //Curatin sprites
+
+        // Curatin sprites
         curtains.sprite_sheet_curtain[0] = loadImage("Shapes_and_Sprites/curtainLayers/l0_curtains1.png");
         curtains.sprite_sheet_curtain[1] = loadImage("Shapes_and_Sprites/curtainLayers/l1_curtains1.png");
         curtains.sprite_sheet_curtain[2] = loadImage("Shapes_and_Sprites/curtainLayers/l2_curtains1.png");
@@ -97,11 +97,9 @@ public class longWalkHomeApplet extends Visual {
         curtains.sprite_sheet_curtain[4] = loadImage("Shapes_and_Sprites/curtainLayers/l4_curtains1.png");
         curtains.sprite_sheet_curtain[5] = loadImage("Shapes_and_Sprites/curtainLayers/l5_curtains1.png");
 
-
         fireballs = new ArrayList<>();
         noStroke();
         ellipseMode(RADIUS);
-        
 
         println("Starting drawing now!");
     }
@@ -198,7 +196,6 @@ public class longWalkHomeApplet extends Visual {
         }
     }
 
-    
     // The meteor class, draws waveform and particles off incoming meteor
     class Meteor {
         public int origin_x; // new scene origin
@@ -383,7 +380,7 @@ public class longWalkHomeApplet extends Visual {
         }
     }
 
-    class Curtain{
+    class Curtain {
 
         public PImage[] sprite_sheet_curtain = new PImage[6];
         private int curtainHeight;
@@ -392,28 +389,28 @@ public class longWalkHomeApplet extends Visual {
         private int starting_Y;
         public int sprite_index = 0;
 
-        
-
         public Curtain(int starting_y_pos, int animation_rate, int curtain_width, int curtain_height) {
             starting_Y = starting_y_pos;
             frame_rate = animation_rate;
             curtainWidth = curtain_width;
             curtainHeight = curtain_height;
         }
+
         public void draw_curtains() {
             if (millis() % 2000 < 50) {
                 sprite_index++;
             }
-            if (getAudioPlayer().length() - getAudioPlayer().position() <= 5000 && millis() % 2000 < 50){
+
+            if (getAudioPlayer().length() - getAudioPlayer().position() <= 5000 && millis() % 2000 < 50) {
                 sprite_index--;
             }
-            if(sprite_index <=5 && sprite_index < 0){
-                image(sprite_sheet_curtain[sprite_index], X, starting_Y, curtainWidth, curtainHeight);
-                
-            }
-            
-        }
 
+            if (sprite_index <= 5 && sprite_index >= 0) {
+                image(sprite_sheet_curtain[sprite_index], X, starting_Y, curtainWidth, curtainHeight);
+
+            }
+
+        }
 
     }
 
@@ -522,7 +519,7 @@ public class longWalkHomeApplet extends Visual {
         // Black screen, used for fade in
         fill(0, 0, 0, black_screen_alpha);
         rect(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
-        
+
         if (end_song == false) {
             fill(240);
             text("\"SOME SAY THE WORLD WILL END IN FIRE, SOME SAY IN ICE,\n"
@@ -539,7 +536,6 @@ public class longWalkHomeApplet extends Visual {
             text("Thank you", width / 2, black_screen_alpha);
         }
 
-        
         // Start playing sound at a certain point in the fade in sequence
         if (start_song == true && black_screen_alpha <= 175) {
             println("\nPLAYING SONG NOW");
@@ -550,9 +546,7 @@ public class longWalkHomeApplet extends Visual {
         }
 
         curtains.draw_curtains();
-        
-        
-        
+
         // start fade out 10 seconds before the end
         if (getAudioPlayer().length() - getAudioPlayer().position() <= 10000) {
             if (black_screen_alpha < -1) {
