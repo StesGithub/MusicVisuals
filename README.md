@@ -37,7 +37,7 @@ private static float[] smooth_bands;
 
 2. César - Here's how the meteor works and stuff
 
-3. Stephen - How the sprites and animations work. I designed all of the sprites myself so the art would be unique. I created seperate frames for the city, curtains and our protagonist. These images were fed into their own array lists that we could cycle through during the runtime of our project to create movment.
+3. Stephen - How the sprites and animations work. I designed all of the sprites myself so the art would be unique. I created seperate frames for the city, curtains, meteor and our protagonist. These images were fed into their own array lists that we could cycle through them during the runtime of our project to create movment.
 	- For the curtains: The curtains have their own class and when called by the draw method will initialise all of our drawings as well as positional data we then slow down the animation by only allowing sprite_index to be incremented every two seconds rather than everytime the draw method class the function. This creates a less rushed animation. We then render the elements of the array list in order using sprite_index which creates an animation of opening and closing curtains.
 	- For the dude: We named our protagonist the dude to make it easy to decipher what variables we're working with and also the name felt fitting. For his animation he also has his own class in which their are nested if statements to check if enough time has passed to move to the next frame and another if statemnt to check if our sprite_index is about to go out of bounds and then resetting it to 0 so the animation can conintue for the duration of our song and give the illusion of him walking through the city.
 	- For the city: The city has two different versions that seemlessly blend into eahcother during the runtime of the song, to give the illusion of it gradually being destroyed as our meteor gets closer and citizens start to panic. Within our draw method there are if statements that handle these changes, so within the first 5 seconds there's only a nice clean city and then after those five seconds our two city get melded together to create the illusion of the destruction beginning and after 40 seconds the nice city is removed from the rotation leaving only the destroyed city graphic. The city is given the illusion of going on forever by using our repeatable sprite class. This is done by passing our reference images and calling the repeat function which takes our parameters and calculates the number of sprites required to fill the screen, the method then loops through the required number of sprites and draws them at an appropriate x position to fill the screen. The method then updates the starting x position to simulate scrolling.
@@ -52,6 +52,13 @@ private static float[] smooth_bands;
 2. Stephen - I am most proud of the assets I designed and how seamlessly everything came togehter. All of the assets and animations compliment eachother and the whole experience feels cohesive and I think all of our collaboration does a great job of telling the story of the song.
 
 # Markdown Tutorial
+
+The Sprite images for our animations:
+	[sprite1](images/dude1.PNG)
+
+
+
+
 
 This is *emphasis*
 
